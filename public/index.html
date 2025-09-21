@@ -12,9 +12,7 @@
 
 <style>
   :root{
-    /* Sharp edges for hacker vibe */
-    --radius:0px;
-
+    --radius:14px;          /* rounded corners back on */
     /* Neon palette for outlines & text */
     --neon:#00FF41;         /* default green */
     --neon-cyan:#00F5FF;    /* Mythic */
@@ -91,14 +89,16 @@
   }
   @media(max-width:500px){.haw-grid{grid-template-columns:1fr}}
 
-  /* Card */
+  /* Card — exact 1150:1650 aspect */
   .haw-card{
     position:relative; isolation:isolate;
-    perspective:1200px; aspect-ratio:3/4; margin:0; width:100%;
+    perspective:1200px; aspect-ratio:1150/1650; margin:0; width:100%;
     transition:transform .25s ease,box-shadow .25s ease;
   }
   .haw-card:hover{transform:translateY(-2px);box-shadow:0 0 22px rgba(0,255,65,.25)}
-  @supports not (aspect-ratio:3/4){.haw-card::before{content:"";display:block;padding-top:133.333%}}
+  @supports not (aspect-ratio:1150/1650){
+    .haw-card::before{content:"";display:block;padding-top:143.478%} /* 1650/1150*100 */
+  }
 
   /* Neon aura (kept green for brand pulse) */
   .haw-card::after{
@@ -129,20 +129,14 @@
     display:flex;align-items:center;justify-content:center;background:#000;
   }
 
-  /* FULL-BLEED ART:
-     - Default: cover (fills card, may crop a hair)
-     - Tiny screens (<480px): contain (no crop, may letterbox) */
+  /* FULL-BLEED ART with matched aspect → no cropping */
   .face.front img{
-    width:100%; height:100%; object-fit:cover; object-position:center;
+    width:100%; height:100%;
+    object-fit:cover; object-position:center;
     display:block;
     filter:contrast(1.05) saturate(1.05) drop-shadow(0 0 6px rgba(0,255,65,.12));
     background:#000;
   }
-  @media (max-width:480px){
-    .face.front img{ object-fit:contain; }
-  }
-
-  .haw-card:hover .face.front img{transform:translate(-.25px,.25px)}
 
   /* Back face uses grid to keep title+badge fixed and blurb flexible */
   .face.back{
@@ -287,7 +281,7 @@ const CARDS = [
 
   // Common
   { id:33,  title: "Hunger",           filename: "33-hunger.webp",          rarity: "Common" },
-  { id:34,  title: "Homless",          filename: "34-homless.webp",         rarity: "Common" },  /* keep spelling to match file */
+  { id:34,  title: "Homeless",         filename: "34-homeless.webp",        rarity: "Common" },
   { id:35,  title: "Providing",        filename: "35-providing.webp",       rarity: "Common" },
   { id:36,  title: "Rent",             filename: "36-rent.webp",            rarity: "Common" },
   { id:37,  title: "Debt",             filename: "37-debt.webp",            rarity: "Common" },
@@ -299,14 +293,14 @@ const CARDS = [
   { id:43,  title: "Abuse",            filename: "43-abuse.webp",           rarity: "Common" },
   { id:44,  title: "Inadequacy",       filename: "44-inadequacy.webp",      rarity: "Common" },
   { id:45,  title: "Guilt",            filename: "45-guilt.webp",           rarity: "Common" },
-  { id:46,  title: "Lonliness",        filename: "46-lonliness.webp",       rarity: "Common" },  /* keep spelling to match file */
+  { id:46,  title: "Loneliness",       filename: "46-loneliness.webp",      rarity: "Common" },
   { id:47,  title: "Screentime",       filename: "47-screentime.webp",      rarity: "Common" },
   { id:48,  title: "Comparison",       filename: "48-comparison.webp",      rarity: "Common" },
   { id:49,  title: "Accidents",        filename: "49-accidents.webp",       rarity: "Common" },
   { id:50,  title: "Infidelity",       filename: "50-infidelity.webp",      rarity: "Common" }
 ];
 
-/* Preloaded blurbs (context → study nod → quip). */
+/* Blurbs */
 const BLURBS = {
   "Death": "Ever wonder how close you are to the end? Every culture faces mortality; studies in terror management theory show that acknowledging death can reduce avoidance and sharpen values. The timer makes the moments taste sweeter—so when’s your final act?",
   "Aging": "Worried your warranty expired? Senescent cells and DNA wear drive decline; gerontology links aging with reduced repair capacity. The code still runs—just handle with care.",
@@ -342,7 +336,7 @@ const BLURBS = {
   "Crime": "Lock or look out? Rates map to poverty and disconnection; investment lowers both. Bolt the door, open the block—walk?",
   "Privacy": "Who’s reading? Autonomy needs a private room; breaches cost more than data. What’s yours is sacred—even if searchable.",
   "Hunger": "What’s for dinner—nothing? Food insecurity dents health and learning; targeted aid works fast. Empty plates echo—can you hear it?",
-  "Homless": "Where’s home tonight? Housing-first improves outcomes; unsheltered life shortens life. A key can be medicine—spare one?",
+  "Homeless": "Where’s home tonight? Housing-first improves outcomes; unsheltered life shortens life. A key can be medicine—spare one?",
   "Providing": "Strong back, sore soul? Caregivers burn out without support; sharing extends care. Even pillars need scaffolds—who’s yours?",
   "Rent": "Thirty percent… or forty? High rent burden predicts stress; protections flatten spikes. Home shouldn’t be a monthly cliff—roped in?",
   "Debt": "Interest or interest-ing? Debt tracks poor sleep; clear payoff plans help. Compounding cuts both ways—pick a side.",
@@ -354,7 +348,7 @@ const BLURBS = {
   "Abuse": "Survived—now what? Trauma lingers; safety + support rewires futures. Survival’s a skill; healing’s a craft—apprentice in?",
   "Inadequacy": "Me vs. everyone’s highlight reel? Comparison drains joy; self-compassion refills it. Drafts aren’t albums—release date TBD.",
   "Guilt": "Useful nudge or rust? Healthy guilt repairs; chronic guilt corrodes. Apologize, adjust, advance—repeat.",
-  "Lonliness": "Who texts first? Isolation harms like smoking; connection heals. Community is cardio for the soul—ready to sweat?",
+  "Loneliness": "Who texts first? Isolation harms like smoking; connection heals. Community is cardio for the soul—ready to sweat?",
   "Screentime": "Thumb in charge? Overuse hits sleep and attention; mindful breaks help. The feed doesn’t feed—log off, look up.",
   "Comparison": "Scoreboard on? Gratitude stabilizes happiness; comparison shakes it. Compete with yesterday, not everyone.",
   "Accidents": "Split second or safe second? Small upgrades cut big risks. Cushion corners, not dreams—helmet on?",
