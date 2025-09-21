@@ -5,14 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Have A Worry — Matrix Skin</title>
 
-<!-- Favicons / PWA -->
-<link rel="icon" href="/favicon.ico">
-<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-<link rel="manifest" href="/site.webmanifest">
-<meta name="theme-color" content="#00FF41">
-
 <!-- Fonts -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -43,21 +35,14 @@
   }
 
   .haw-wrap{max-width:1400px;margin:1rem auto;padding:.5rem}
-
-  /* ---------- Header & CTAs ---------- */
-  .haw-header{
-    position:relative; /* place corner CTAs */
-    text-align:center;
-    margin-bottom:1rem;
-    padding: 2.75rem 1rem 1.25rem; /* room for corner buttons */
-  }
+  .haw-header{text-align:center;margin-bottom:1rem;padding:1rem}
   .haw-head{
     font-family:"Pacifico", "Orbitron", "Share Tech Mono", monospace;
     font-weight:400;
-    font-size:clamp(3.0rem, 4.375vw + 1.25rem, 5.625rem);
+    font-size:clamp(3.0rem, 4.375vw + 1.25rem, 5.625rem); /* ~25% larger than prior */
     margin:.25rem 0;
     letter-spacing:.06em;
-    white-space:nowrap;
+    white-space:nowrap; /* keep on one line when possible */
     text-shadow:0 0 14px rgba(0,255,65,.35);
   }
   .haw-sub{
@@ -66,41 +51,7 @@
     font-size:1rem;
   }
 
-  /* Corner call-to-action buttons */
-  .cta-btn{
-    position:absolute;
-    top:0.75rem;
-    display:inline-flex;
-    align-items:center;
-    justify-content:center;
-    text-decoration:none;
-    font-family:"Pacifico","Share Tech Mono",monospace;
-    font-weight:400;
-    letter-spacing:.02em;
-    color:#00FF41;
-    border:2px solid #00FF41;
-    border-radius:12px;
-    padding:.5rem .85rem;
-    font-size: clamp(.9rem, 1.6vw, 1.15rem);
-    box-shadow:
-      0 0 0 1px #00FF41,
-      0 0 14px rgba(0,255,65,.35),
-      inset 0 0 12px rgba(0,255,65,.08);
-    background:linear-gradient(180deg, rgba(0,255,65,.10), rgba(0,255,65,.04));
-    transition: transform .15s ease, box-shadow .2s ease;
-    z-index:5;
-  }
-  .cta-btn:hover{
-    transform: translateY(-1px);
-    box-shadow:
-      0 0 0 1px #00FF41,
-      0 0 22px rgba(0,255,65,.55),
-      inset 0 0 14px rgba(0,255,65,.12);
-  }
-  .cta-left{ left:.75rem; }
-  .cta-right{ right:.75rem; }
-
-  /* Controls (search + rarity) */
+  /* Controls */
   .haw-controls{display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;margin:0 0 1rem}
   .field{display:flex;align-items:center;gap:.5rem}
   .field label{font-size:.9rem;color:rgba(0,255,65,.85)}
@@ -137,7 +88,7 @@
       repeating-linear-gradient(to right, rgba(0,255,65,.07) 0 1px, transparent 1px 40px),
       repeating-linear-gradient(to bottom, rgba(0,255,65,.07) 0 1px, transparent 1px 40px);
   }
-  @media(max-width:500px){ .haw-grid{grid-template-columns:1fr} }
+  @media(max-width:500px){.haw-grid{grid-template-columns:1fr}}
 
   /* Card */
   .haw-card{
@@ -149,7 +100,7 @@
   .haw-card:hover{transform:translateY(-2px);box-shadow:0 0 22px rgba(0,255,65,.25)}
   @supports not (aspect-ratio:1150/1650){.haw-card::before{content:"";display:block;padding-top:143.478%}}
 
-  /* Neon aura */
+  /* Neon aura (kept green for brand pulse) */
   .haw-card::after{
     content:"";position:absolute;inset:-6%;
     background:
@@ -159,7 +110,7 @@
   }
   @keyframes hawPulse{0%,100%{opacity:.45;transform:scale(.98)}50%{opacity:.75;transform:scale(1.02)}}
 
-  /* Per-card outline via --outline */
+  /* Per-card outline (via inline --outline) */
   .haw-card>.inner{
     position:absolute;inset:0;z-index:1;background:#000;border-radius:var(--radius);
     border:1px solid var(--outline, #00FF41);
@@ -174,7 +125,7 @@
 
   .face{position:absolute;inset:0;backface-visibility:hidden;border-radius:var(--radius);overflow:hidden}
 
-  /* FRONT: no-crop view */
+  /* FRONT: show full artwork without cropping */
   .face.front{
     display:flex;align-items:center;justify-content:center;background:#000;
   }
@@ -202,7 +153,7 @@
     border-radius:var(--radius);
   }
 
-  /* Full-card invisible button */
+  /* Invisible full-card button (on top) */
   .flip-btn{
     position:absolute;inset:0;z-index:3;background:transparent;border:0;cursor:pointer;color:transparent;
   }
@@ -212,10 +163,9 @@
 
   .haw-empty{background:#000;color:#00FF41;border:1px dashed rgba(0,255,65,.35)}
 
-  /* Smaller phones */
+  /* Title smaller on very small phones, keep one line where possible */
   @media (max-width: 360px){
     .haw-head{ font-size: clamp(2.2rem, 7.2vw + 0.6rem, 3.6rem); }
-    .cta-btn{ font-size: clamp(.8rem, 3.4vw, 1rem); padding:.4rem .7rem; }
   }
 </style>
 </head>
@@ -223,18 +173,12 @@
 <body>
   <div class="haw-wrap">
     <header class="haw-header">
-      <!-- Corner CTAs -->
-      <a class="cta-btn cta-left" href="https://vibechain.com/market/have-a-worry?ref=H7QP4C2CD6MD" target="_blank" rel="noopener">Buy Now</a>
-      <a class="cta-btn cta-right" href="https://x.com/0xDobbs" target="_blank" rel="noopener">Socials</a>
-
-      <!-- Title & sub -->
       <h1 class="haw-head">Have a Worry!</h1>
       <p class="haw-sub">
         A collectible gallery of modern anxieties. 
         Worry isn’t “good,” but here it’s useful—awareness is the first line of defense.
       </p>
 
-      <!-- Search -->
       <div class="haw-controls" role="search">
         <div class="field">
           <label for="q">Search</label>
@@ -242,7 +186,6 @@
         </div>
       </div>
 
-      <!-- Rarity filter -->
       <div class="rarity-pills" role="group" aria-label="Filter by rarity">
         <button class="pill" data-r="All" aria-pressed="true">All</button>
         <button class="pill" data-r="Mythic" aria-pressed="false">Mythic</button>
@@ -270,7 +213,7 @@ const OUTLINE_BY_RARITY = {
   All:       "#00FF41"
 };
 
-/* Card manifest (.webp). Optional 'back' lets you override the auto-derived name. */
+/* Card manifest (.webp) — note corrected spellings Homeless/Loneliness */
 const CARDS = [
   // Mythic
   { id: 1,  title: "Death",            filename: "1-death.webp",            rarity: "Mythic" },
@@ -313,7 +256,7 @@ const CARDS = [
   { id:31,  title: "Crime",            filename: "31-crime.webp",           rarity: "Rare" },
   { id:32,  title: "Privacy",          filename: "32-privacy.webp",         rarity: "Rare" },
 
-  // Common (with corrected spellings)
+  // Common
   { id:33,  title: "Hunger",           filename: "33-hunger.webp",          rarity: "Common" },
   { id:34,  title: "Homeless",         filename: "34-homeless.webp",        rarity: "Common" },
   { id:35,  title: "Providing",        filename: "35-providing.webp",       rarity: "Common" },
@@ -334,10 +277,7 @@ const CARDS = [
   { id:50,  title: "Infidelity",       filename: "50-infidelity.webp",      rarity: "Common" }
 ];
 
-/* Build back filename from front: "x.webp" -> "x-back.webp" (can be overridden via c.back) */
-function deriveBack(frontFile){ return frontFile.replace(/\.webp$/i, "-back.webp"); }
-
-/* State */
+/* Simple search/filter state */
 let currentQuery = "";
 let currentRarity = "All";
 
@@ -347,30 +287,25 @@ const $pills   = document.querySelectorAll(".pill");
 
 function outlineFor(rarity){ return OUTLINE_BY_RARITY[rarity] || OUTLINE_BY_RARITY.Common; }
 
-/* robust back loader: tries primary back, then swaps to generic */
-function backImgTag(c){
-  const backFile = (c.back && c.back.trim()) ? c.back : deriveBack(c.filename);
-  const primary  = IMG_BASE + backFile;
-  const generic  = IMG_BASE + "card-back-generic.webp";
-  // onerror swaps to generic and then disables itself to avoid loops
-  return `<img loading="lazy" decoding="async"
-              src="${primary}"
-              alt="${c.title} — card back"
-              onerror="this.onerror=null;this.src='${generic}'">`;
+/* Derive back image path from the front filename by appending "-back" and placing under /backs/ */
+function backSrcFor(c){
+  const base = c.filename.replace(/\.webp$/i, "-back.webp");
+  return IMG_BASE + "backs/" + base;
 }
 
 function cardHTML(c){
   const outline = outlineFor(c.rarity);
+  const backSrc = backSrcFor(c);
+
   return `
   <figure class="haw-card" style="--outline:${outline}">
     <div class="inner">
       <div class="face front">
-        <img loading="lazy" decoding="async"
-             src="${IMG_BASE + c.filename}" alt="${c.title} — card front">
+        <img loading="lazy" decoding="async" src="${IMG_BASE + c.filename}" alt="${c.title} — card illustration">
       </div>
-      <div class="face back">
-        ${backImgTag(c)}
-      </div>
+      <figcaption class="face back" aria-label="Back of ${c.title}">
+        <img loading="lazy" decoding="async" src="${backSrc}" alt="Back of ${c.title} card">
+      </figcaption>
     </div>
     <button class="flip-btn" aria-label="Flip card: ${c.title}" aria-pressed="false"></button>
   </figure>`;
