@@ -5,22 +5,21 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Have A Worry — Matrix Skin</title>
 
-<!-- Matrix-y webfonts -->
+<!-- Fonts -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Orbitron:wght@400;600&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 
 <style>
-  /* ------- Theme tokens ------- */
   :root{
     --radius:14px;
 
-    /* Neon palette per rarity */
-    --neon:#00FF41;       /* default green */
-    --neon-cyan:#00F5FF;  /* Mythic */
-    --neon-yellow:#F8FF00;/* Legendary */
-    --neon-purple:#BB00FF;/* Epic */
-    --neon-blue:#00B3FF;  /* Rare */
+    /* Neon palette for outlines & text */
+    --neon:#00FF41;         /* default green */
+    --neon-cyan:#00F5FF;    /* Mythic */
+    --neon-yellow:#F8FF00;  /* Legendary */
+    --neon-purple:#BB00FF;  /* Epic */
+    --neon-blue:#00B3FF;    /* Rare */
   }
 
   html,body{height:100%}
@@ -31,19 +30,25 @@
       repeating-linear-gradient(to bottom, rgba(0,255,65,.04) 0px, rgba(0,255,65,.04) 2px, transparent 3px, transparent 6px),
       #000;
     color:#00FF41;
-    font-family:"Matrix Sans","Share Tech Mono",ui-monospace,monospace;
+    font-family:"Share Tech Mono", ui-monospace, monospace;
     letter-spacing:.2px;
   }
 
   .haw-wrap{max-width:1400px;margin:1rem auto;padding:.5rem}
   .haw-header{text-align:center;margin-bottom:1rem;padding:1rem}
   .haw-head{
-    font-family:"Orbitron","Matrix Sans","Share Tech Mono",monospace;
-    font-weight:600;font-size:2.2rem;margin:.25rem 0;
-    text-transform:uppercase;letter-spacing:.08em;
-    text-shadow:0 0 10px rgba(0,255,65,.35);
+    font-family:"Pacifico", "Orbitron", "Share Tech Mono", monospace;
+    font-weight:400;
+    font-size:clamp(2.6rem, 3.8vw + 1rem, 5rem);
+    margin:.25rem 0;
+    letter-spacing:.02em;
+    text-shadow:0 0 14px rgba(0,255,65,.35);
   }
-  .haw-sub{max-width:65ch;margin:.25rem auto 1.25rem;color:rgba(0,255,65,.85)}
+  .haw-sub{
+    max-width:68ch;margin:.35rem auto 1.25rem;
+    color:rgba(0,255,65,.85);
+    font-size:1rem;
+  }
 
   /* Controls */
   .haw-controls{display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;margin:0 0 1rem}
@@ -73,7 +78,7 @@
   /* Grid */
   .haw-grid{
     display:grid;gap:16px;
-    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
     justify-content:center;justify-items:center;padding:0 1rem;
     transition:opacity .3s ease,transform .3s ease;
     border:1px solid rgba(0,255,65,.15);border-radius:12px;
@@ -84,31 +89,16 @@
   }
   @media(max-width:500px){.haw-grid{grid-template-columns:1fr}}
 
-  /* Card (per-card variables control color) */
+  /* Card */
   .haw-card{
     position:relative; isolation:isolate;
     perspective:1200px; aspect-ratio:3/4; margin:0; width:100%;
     transition:transform .25s ease,box-shadow .25s ease;
-    /* defaults (green) */
-    --card-outline: var(--neon);
-    --card-fg: var(--card-outline);
   }
   .haw-card:hover{transform:translateY(-2px);box-shadow:0 0 22px rgba(0,255,65,.25)}
   @supports not (aspect-ratio:3/4){.haw-card::before{content:"";display:block;padding-top:133.333%}}
 
-  /* Rarity classes set per-card colors */
-  .haw-card.mythic    { --card-outline: var(--neon-cyan);   }
-  .haw-card.legendary { --card-outline: var(--neon-yellow); }
-  .haw-card.epic      { --card-outline: var(--neon-purple); }
-  .haw-card.rare      { --card-outline: var(--neon-blue);   }
-  .haw-card.common    { --card-outline: var(--neon);        }
-  .haw-card.mythic,
-  .haw-card.legendary,
-  .haw-card.epic,
-  .haw-card.rare,
-  .haw-card.common    { --card-fg: var(--card-outline);     }
-
-  /* Aura (kept green for brand pulse) */
+  /* Neon aura (kept green for brand pulse) */
   .haw-card::after{
     content:"";position:absolute;inset:-6%;
     background:
@@ -119,47 +109,57 @@
   }
   @keyframes hawPulse{0%,100%{opacity:.45;transform:scale(.98)}50%{opacity:.75;transform:scale(1.02)}}
 
-  /* Frame uses per-card outline */
+  /* Per-card outline (via inline --outline) */
   .haw-card>.inner{
     position:absolute;inset:0;z-index:1;background:#000;border-radius:var(--radius);
-    border:1px solid var(--card-outline);
+    border:1px solid var(--outline, #00FF41);
     box-shadow:
-      0 0 0 1px var(--card-outline),
-      0 0 14px color-mix(in srgb, var(--card-outline) 35%, transparent),
-      0 0 32px color-mix(in srgb, var(--card-outline) 22%, transparent);
+      0 0 0 1px var(--outline, #00FF41),
+      0 0 14px color-mix(in srgb, var(--outline, #00FF41) 35%, transparent),
+      0 0 32px color-mix(in srgb, var(--outline, #00FF41) 22%, transparent);
     transform-style:preserve-3d;transition:transform .6s ease;
   }
   .haw-card.is-flipped>.inner{transform:rotateY(180deg)}
   @media(prefers-reduced-motion:reduce){.haw-card>.inner{transition:none}}
 
   .face{position:absolute;inset:0;backface-visibility:hidden;border-radius:var(--radius);overflow:hidden}
-  .face.front{display:flex;align-items:center;justify-content:center;background:#000}
-  .face.front img{width:100%;height:100%;object-fit:cover;display:block;
-    filter:contrast(1.05) saturate(1.05) drop-shadow(0 0 6px rgba(0,255,65,.12))}
+  .face.front{
+    display:flex;align-items:center;justify-content:center;background:#000;
+  }
+  /* Show full artwork without cropping */
+  .face.front img{
+    width:100%; height:100%;
+    object-fit:contain;
+    display:block;
+    filter:contrast(1.05) saturate(1.05) drop-shadow(0 0 6px rgba(0,255,65,.12));
+    background:#000;
+  }
   .haw-card:hover .face.front img{transform:translate(-.25px,.25px)}
 
-  /* Back face inherits per-card text color */
   .face.back{
-    transform:rotateY(180deg);background:#000;color:var(--card-fg);
-    padding:16px;display:flex;flex-direction:column;gap:.5rem;
-    box-shadow:inset 0 0 18px color-mix(in srgb, var(--card-outline) 20%, transparent);
+    transform:rotateY(180deg);
+    background:#000;
+    color:var(--outline, #00FF41);  /* match rarity color */
+    padding:16px; display:flex; flex-direction:column; gap:.5rem;
+    box-shadow:inset 0 0 18px rgba(0,255,65,.08)
   }
 
   .title{
-    font-family:"Orbitron","Matrix Sans","Share Tech Mono",monospace;
-    font-weight:600;font-size:1.1rem;letter-spacing:.04em;color:var(--card-fg);
-    text-shadow:0 0 8px color-mix(in srgb, var(--card-outline) 35%, transparent);
+    font-family:"Pacifico","Orbitron","Share Tech Mono",monospace;
+    font-weight:400; font-size:1.1rem; letter-spacing:.02em;
+    color:var(--outline, #00FF41);
+    text-shadow:0 0 8px color-mix(in srgb, var(--outline, #00FF41) 35%, transparent);
     margin-top:.25rem;
   }
 
   .rarity{
     display:inline-block;font-size:.75rem;font-weight:700;
-    padding:.22rem .5rem;border-radius:10px;color:var(--card-fg);background:transparent;
-    border:1px solid var(--card-outline);
-    box-shadow:0 0 10px color-mix(in srgb, var(--card-outline) 35%, transparent);
+    padding:.22rem .5rem;border-radius:10px;
+    color:var(--outline, #00FF41); background:transparent;
+    border:1px solid var(--outline, #00FF41);
+    box-shadow:0 0 10px color-mix(in srgb, var(--outline, #00FF41) 35%, transparent);
   }
 
-  /* Invisible full-card button (on top) */
   .flip-btn{
     position:absolute;inset:0;z-index:3;background:transparent;border:0;cursor:pointer;color:transparent;
   }
@@ -167,15 +167,18 @@
   .animate-cards{animation:slideIn .6s ease-out}
   @keyframes slideIn{0%{opacity:0;transform:translateY(20px)}100%{opacity:1;transform:translateY(0)}}
 
-  .haw-empty{background:#000;color:#00FF41;border:1px dashed rgba(0,255,65,.35);padding:1rem;text-align:center}
+  .haw-empty{background:#000;color:#00FF41;border:1px dashed rgba(0,255,65,.35)}
 </style>
 </head>
 
 <body>
   <div class="haw-wrap">
     <header class="haw-header">
-      <h1 class="haw-head">Have A Worry</h1>
-      <p class="haw-sub">Vintage cards re-skinned in green code. Click any card to flip.</p>
+      <h1 class="haw-head">Have a Worry!</h1>
+      <p class="haw-sub">
+        A collectible gallery of modern anxieties. 
+        Worry isn’t “good,” but here it’s useful—awareness is the first line of defense.
+      </p>
 
       <div class="haw-controls" role="search">
         <div class="field">
@@ -198,11 +201,20 @@
   </div>
 
 <script>
-/* ---------- Where your images live ---------- */
-/* On Vercel, /public/cards → served at /cards */
+/* Where images live (Vercel serves /public as site root) */
 const IMG_BASE = "/cards/";
 
-/* ---------- Card manifest (webp, with rarity) ---------- */
+/* Per-rarity outline colors */
+const OUTLINE_BY_RARITY = {
+  Mythic:    "#00F5FF",
+  Legendary: "#F8FF00",
+  Epic:      "#BB00FF",
+  Rare:      "#00B3FF",
+  Common:    "#00FF41",
+  All:       "#00FF41"
+};
+
+/* Card manifest (.webp) */
 const CARDS = [
   // Mythic
   { id: 1,  title: "Death",            filename: "1-death.webp",            rarity: "Mythic" },
@@ -247,7 +259,7 @@ const CARDS = [
 
   // Common
   { id:33,  title: "Hunger",           filename: "33-hunger.webp",          rarity: "Common" },
-  { id:34,  title: "Homeless",         filename: "34-homeless.webp",        rarity: "Common" },
+  { id:34,  title: "Homless",          filename: "34-homless.webp",         rarity: "Common" },  /* keep spelling to match file */
   { id:35,  title: "Providing",        filename: "35-providing.webp",       rarity: "Common" },
   { id:36,  title: "Rent",             filename: "36-rent.webp",            rarity: "Common" },
   { id:37,  title: "Debt",             filename: "37-debt.webp",            rarity: "Common" },
@@ -259,25 +271,189 @@ const CARDS = [
   { id:43,  title: "Abuse",            filename: "43-abuse.webp",           rarity: "Common" },
   { id:44,  title: "Inadequacy",       filename: "44-inadequacy.webp",      rarity: "Common" },
   { id:45,  title: "Guilt",            filename: "45-guilt.webp",           rarity: "Common" },
-  { id:46,  title: "Loneliness",       filename: "46-loneliness.webp",      rarity: "Common" },
+  { id:46,  title: "Lonliness",        filename: "46-lonliness.webp",       rarity: "Common" },  /* keep spelling to match file */
   { id:47,  title: "Screentime",       filename: "47-screentime.webp",      rarity: "Common" },
   { id:48,  title: "Comparison",       filename: "48-comparison.webp",      rarity: "Common" },
   { id:49,  title: "Accidents",        filename: "49-accidents.webp",       rarity: "Common" },
   { id:50,  title: "Infidelity",       filename: "50-infidelity.webp",      rarity: "Common" }
 ];
 
-/* ---------- Search & render plumbing ---------- */
-function defaultBlurb(t){
-  const lines=[
-    `${t} arrives softly, then refuses to leave.`,
-    `${t} hides in the margins until the lights go out.`,
-    `${t} hums like a transformer somewhere down the block.`,
-    `${t} trades today’s calm for tomorrow’s questions.`,
-    `${t} is easier to share than to solve.`
-  ];
-  return lines[Math.floor(Math.random()*lines.length)];
+/* Base blurbs (facts/tone) */
+const BLURBS = {
+  "Death": "Every culture faces mortality; studies in terror management theory show that acknowledging death can reduce avoidance and sharpen values. The timer makes the moments taste sweeter.",
+  "Aging": "Senescent cells and DNA wear drive decline; gerontology links aging with reduced repair capacity. Old code still runs—it just needs gentler inputs.",
+  "Irrelevance": "In attention economies, social comparison research shows relevance is felt more than measured. Trend lines fade—but your ripple doesn’t.",
+  "Climate Change": "CO₂, heatwaves, and glacier loss tell one story; climate science calls it a health issue too. When the house is warming, you move the valuables—then the habits.",
+  "Capitalism": "Markets spark innovation and inequality; decades of data show widening wealth gaps erode trust. Great engine—terrible seatbelts.",
+  "Fascism": "History shows authoritarian promises during crises; political science links it to suppressed dissent. Order without oxygen isn’t order—it’s sleep.",
+  "Communism": "Collective ideals met centralized power; 20th-century trials showed shortages and fear—but also lifted literacy. Equal tables still need free chairs.",
+  "Socialism": "Countries with strong safety nets show better health and education outcomes. Sharing risk works—so does leaving the door unlocked for ambition.",
+  "Loss Of Trust": "Institutional failure predicts anxiety spikes; social psych ties betrayal to vigilance. Trust grows slow, breaks quick, and bills interest.",
+  "Loss Of Morality": "Moral injury research shows harm when values and actions collide. When the compass stutters, you chart by stars.",
+  "War": "PTSD and displacement echo for generations; public health tracks conflict like a disease. War ends on paper—echoes don’t.",
+  "Surveillance": "Behavior changes under observation; privacy research shows autonomy shrinks when watched. The lens is small; the shadow is huge.",
+  "Guns": "Higher prevalence correlates with more accidental deaths; public health keeps finding the same curve. Tools remember what hands forget.",
+  "Gun Control": "Policy analyses tie certain regulations to fewer homicides and suicides. Guardrails don’t slow you much—just keep you on the road.",
+  "Deportation": "Family separation links to trauma and economic loss; migration studies catalogue the scars. Borders cut paper first, people next.",
+  "Division": "Polarization research tracks declining wellbeing in split communities. Fractures let light in—and also the weather.",
+  "Corruption": "Transparency indices mirror trust; corruption taxes the poor in quiet ways. A crooked path still leads somewhere—usually downhill.",
+  "Racism": "From maternal mortality to housing, disparities prove structure matters. Systemic problems don’t fix with personal pep talks.",
+  "Addiction": "Compulsion rewires reward circuits; treatment works best with compassion plus structure. Cravings speak data—learn the dialect.",
+  "Automation": "Tasks get replaced faster than jobs; reskilling buffers the shock. Let the robots lift weight—not purpose.",
+  "Education": "More schooling, less poverty; better learning, better health—this is one of the sturdy graphs. Degrees are paper—literacy is armor.",
+  "Illness": "Chronic disease multiplies stress; support and access improve outcomes. Bodies glitch—souls patch.",
+  "Loss Of Faith": "Belief often wobbles after trauma; meaning can rebuild through community and practice. Doubt is a door—use the handle.",
+  "Violence": "Exposure predicts long-term harm; prevention reduces it more than punishment after. Hurt people hurt people—helped people help.",
+  "Bills": "Cost-of-living squeezes mental health; budgeting and aid change the slope. The envelope isn’t heavy—until there are ten.",
+  "Parenting": "Caregiving strain is real; warmth and consistency still outperform perfection. Little mirrors notice how you breathe.",
+  "Equity": "Fair access correlates with healthier societies; unequal ladders waste talent. Level ground grows bigger forests.",
+  "Bankruptcy": "Financial collapse raises anxiety and depression; relief policies shorten the hole. Sometimes you reset the game to keep playing.",
+  "Retirement": "Uncertain savings raise stress; stable pensions cut worry. Exit signs feel safer with daylight.",
+  "Billionaires": "Wealth concentration rises as mobility stalls; inequality aggravates social risk. One rocket doesn’t lift the village.",
+  "Natural Disaster": "Early warnings save lives; climate amplifies extremes. Nature doesn’t negotiate—but neighbors do.",
+  "Crime": "Rates map onto poverty and disconnection; community investment lowers both. Lock the door, open the block.",
+  "Privacy": "Autonomy needs a private room; breaches cost more than data. What’s yours is sacred—even if searchable.",
+  "Hunger": "Food insecurity stunts health and learning; targeted aid fixes it fast. Empty plates echo in report cards.",
+  "Homless": "Housing-first models improve outcomes; unsheltered life shortens life. A key can be medicine.",
+  "Providing": "Care providers burn out without support; shared load prolongs care. Strong backs still need chairs.",
+  "Rent": "Rent burden over 30% predicts stress; protections flatten the spikes. Home shouldn’t feel like a monthly cliff.",
+  "Debt": "Owing tracks with anxiety and poorer sleep; clear plans reduce both. Interest compounds—so can hope.",
+  "Inflation": "Prices up, purchasing down; lowest incomes get hit first. When bread is dear, budgets learn ballet.",
+  "Burnout": "Work strain meets low control; rest and boundaries are treatment, not dessert. You’re not a battery—you’re a garden.",
+  "Free Time": "Leisure restores cognition and mood; even short breaks help. Idle isn’t empty—it’s charging.",
+  "Insomnia": "Poor sleep tanks learning and mood; hygiene and therapy lift it. Night is loud when the brain won’t blink.",
+  "Appearance": "Body image pressure cuts confidence; representation softens the blow. Mirrors report, not decide.",
+  "Abuse": "Trauma lingers unless treated; safety plus support rewires futures. Survival is a skill set—healing is a craft.",
+  "Inadequacy": "Scrolling highlights fuels ‘not enough’; self-compassion practices work. You’re comparing drafts to finished albums.",
+  "Guilt": "Healthy guilt nudges repair; chronic guilt corrodes joy. Apologize, adjust, advance.",
+  "Lonliness": "Isolation harms like smoking; connection is literal medicine. Community is cardio for the soul.",
+  "Screentime": "Excess usage links to sleep and attention issues; mindful breaks help. Your thumb is not your boss.",
+  "Comparison": "Social comparison reduces happiness; gratitude stabilizes it. Scoreboards are optional—meaning isn’t.",
+  "Accidents": "Tiny safety upgrades cut big risks; awareness matters. Luck favors the padded corner.",
+  "Infidelity": "Betrayal wounds deep; honest work can rebuild trust. Broken doesn’t mean unusable—ask kintsugi."
+};
+
+/* Questions (lead-in) */
+const QUESTIONS = {
+  "Death":"Ever have a near-death moment—or just a vivid thought spiral?",
+  "Aging":"Feeling the calendar tug a little harder lately?",
+  "Irrelevance":"Worried the world scrolls past faster than you can wave?",
+  "Climate Change":"Do heat alerts feel like the new seasons now?",
+  "Capitalism":"Does the grind ever feel like the point instead of the means?",
+  "Fascism":"Does ‘law and order’ sometimes sound like ‘order, then silence’?",
+  "Communism":"Does a perfect collective sound great—until you check the fine print?",
+  "Socialism":"Wonder where the safety net ends and the hammock begins?",
+  "Loss Of Trust":"Do headlines make you doubt more than decide?",
+  "Loss Of Morality":"Ever feel the rules got fuzzy while stakes got higher?",
+  "War":"Do far-off battles feel closer than they should?",
+  "Surveillance":"Do you act different when the little light is on?",
+  "Guns":"Ever notice how quickly an accident stops being an accident?",
+  "Gun Control":"Do guardrails feel like help or handcuffs?",
+  "Deportation":"What if a line on a map cut through your kitchen table?",
+  "Division":"Have you lost a friend to the algorithm’s sorting hat?",
+  "Corruption":"Does every shortcut seem to have a toll?",
+  "Racism":"How many doors look open until you try the handle?",
+  "Addiction":"Ever feel your habits are piloting and you’re just in economy?",
+  "Automation":"What part of your job can a loop do better—and cheaper?",
+  "Education":"Is school a ladder—or a subscription?",
+  "Illness":"Do symptoms feel like pop-ups that never quite close?",
+  "Loss Of Faith":"Do the quiet moments feel quieter than they used to?",
+  "Violence":"Do raised voices sound like distant sirens now?",
+  "Bills":"Do envelopes feel heavier at the end of the month?",
+  "Parenting":"Ever worry you’re the adult in the room—and the kid needs a better one?",
+  "Equity":"How fair can a race be if the starting lines move?",
+  "Bankruptcy":"What happens when the math says ‘no’ and life says ‘now’?",
+  "Retirement":"Do you have a finish line or just a longer track?",
+  "Billionaires":"Does one leap feel bigger than a million steps?",
+  "Natural Disaster":"Is your go-bag more metaphor than plan?",
+  "Crime":"Do locks help—or just help you sleep?",
+  "Privacy":"Who owns your shadow in the glow of the screen?",
+  "Hunger":"Ever done math on a grocery aisle?",
+  "Homless":"What if your worst night became someone’s every night?",
+  "Providing":"Who supports the supporter when the tank hits E?",
+  "Rent":"Is home a sanctuary or a timer?",
+  "Debt":"Do numbers grow teeth when the lights go out?",
+  "Inflation":"Does your cart get lighter while your bill gets heavier?",
+  "Burnout":"Is your to-do list breeding overnight?",
+  "Free Time":"Do you need permission to pause?",
+  "Insomnia":"Do 3 a.m. thoughts have better lawyers?",
+  "Appearance":"Ever feel judged by a mirror you didn’t ask for?",
+  "Abuse":"How long does a past tense keep hurting?",
+  "Inadequacy":"Do other people’s highlights drown your soundtrack?",
+  "Guilt":"Is your conscience a helpful coach—or a heckler?",
+  "Lonliness":"Can a crowded room feel empty anyway?",
+  "Screentime":"Is your thumb the boss of you?",
+  "Comparison":"Do scoreboards make you forget the game?",
+  "Accidents":"How small was the step before the fall?",
+  "Infidelity":"What does trust weigh when you try to lift it again?"
+};
+
+/* Endings (anxious kicker) */
+const ENDINGS = {
+  "Death":"So when do you think you’re going to die?",
+  "Aging":"So how many good summers do you think you have left?",
+  "Irrelevance":"So who would actually notice if you went quiet for a week?",
+  "Climate Change":"So how many heatwaves until you move—or change?",
+  "Capitalism":"So what’s your price for a calm life?",
+  "Fascism":"So how much silence buys safety in your town?",
+  "Communism":"So how much freedom would you trade for perfect fairness?",
+  "Socialism":"So where’s your line between cushion and crutch?",
+  "Loss Of Trust":"So who exactly do you still believe?",
+  "Loss Of Morality":"So which value would you refuse to sell—ever?",
+  "War":"So who pays your share of the aftermath?",
+  "Surveillance":"So who do you become when watched forever?",
+  "Guns":"So how many safeties does your peace need?",
+  "Gun Control":"So which freedom would you adjust first: speed or safety?",
+  "Deportation":"So what fits in a suitcase if tomorrow is a border?",
+  "Division":"So which bridge are you willing to rebuild—first?",
+  "Corruption":"So what would it take to make you look away?",
+  "Racism":"So which door are you holding open on purpose?",
+  "Addiction":"So what would you do for one clean week?",
+  "Automation":"So what’s your human moat?",
+  "Education":"So what’s your next class—on purpose?",
+  "Illness":"So what will you change before the chart does?",
+  "Loss Of Faith":"So where does your meaning live now?",
+  "Violence":"So what’s your plan before the next flash?",
+  "Bills":"So which bill gets fed last—and why?",
+  "Parenting":"So which memory are you manufacturing today?",
+  "Equity":"So who gets the first fair shot from you?",
+  "Bankruptcy":"So what’s worth starting at zero for?",
+  "Retirement":"So what would a good ending actually look like?",
+  "Billionaires":"So how much is enough—for anyone?",
+  "Natural Disaster":"So where’s your meeting spot when the lights go?",
+  "Crime":"So do you know your neighbors’ names yet?",
+  "Privacy":"So what secrets are you still allowed to have?",
+  "Hunger":"So who eats when the budget breaks?",
+  "Homless":"So what spare key could you offer—literally or not?",
+  "Providing":"So when’s your next day off on purpose?",
+  "Rent":"So what’s the plan if the number jumps again?",
+  "Debt":"So what’s your first bite out of the monster?",
+  "Inflation":"So what do you cut before you crack?",
+  "Burnout":"So where’s the boundary you’ll keep even tired?",
+  "Free Time":"So what if rest was step one, not last?",
+  "Insomnia":"So what would sleep cost—and will you pay it?",
+  "Appearance":"So who are you when the lens is off?",
+  "Abuse":"So what’s your safety signal—and who knows it?",
+  "Inadequacy":"So what’s one thing you’ll ship messy?",
+  "Guilt":"So what repair starts today?",
+  "Lonliness":"So who gets your first brave invite?",
+  "Screentime":"So when do you put the rectangle down?",
+  "Comparison":"So what if you set your own scoreboard?",
+  "Accidents":"So what’s the tiny fix you’ll do tonight?",
+  "Infidelity":"So what promise still means something to you?"
+};
+
+/* Compose: Question + Blurb + Ending */
+function getBlurb(title){
+  const q = QUESTIONS[title] || `Ever worry about ${title.toLowerCase()}?`;
+  const mid = (BLURBS[title] && BLURBS[title].trim())
+    ? BLURBS[title]
+    : `${title} trades today’s calm for tomorrow’s questions.`;
+  const end = ENDINGS[title] || `So what will you actually do about ${title.toLowerCase()}?`;
+  return `${q} ${mid} ${end}`;
 }
 
+/* State */
 let currentQuery = "";
 let currentRarity = "All";
 
@@ -285,25 +461,20 @@ const $gallery = document.getElementById("gallery");
 const $query   = document.getElementById("q");
 const $pills   = document.querySelectorAll(".pill");
 
-function cardHTML(c){
-  // add a rarity class to drive per-card colors
-  const rClass = c.rarity.toLowerCase(); // mythic|legendary|epic|rare|common
-  const badgeClass =
-    c.rarity==="Mythic"    ? "badge-mythic" :
-    c.rarity==="Legendary" ? "badge-legendary" :
-    c.rarity==="Epic"      ? "badge-epic" :
-    c.rarity==="Rare"      ? "badge-rare" : "badge-common";
+function outlineFor(rarity){ return OUTLINE_BY_RARITY[rarity] || OUTLINE_BY_RARITY.Common; }
 
+function cardHTML(c){
+  const outline = outlineFor(c.rarity);
   return `
-  <figure class="haw-card ${rClass}">
+  <figure class="haw-card" style="--outline:${outline}">
     <div class="inner">
       <div class="face front">
         <img loading="lazy" decoding="async" src="${IMG_BASE + c.filename}" alt="${c.title} — card illustration">
       </div>
       <figcaption class="face back">
-        <span class="rarity ${badgeClass}">${c.rarity}</span>
+        <span class="rarity">${c.rarity}</span>
         <div class="title">${c.title}</div>
-        <p>${defaultBlurb(c.title)}</p>
+        <p>${getBlurb(c.title)}</p>
       </figcaption>
     </div>
     <button class="flip-btn" aria-label="Flip card: ${c.title}" aria-pressed="false"></button>
@@ -313,15 +484,8 @@ function cardHTML(c){
 function render(){
   const q = currentQuery.trim().toLowerCase();
 
-  // rarity filter
-  let list = (currentRarity === "All")
-    ? CARDS.slice()
-    : CARDS.filter(c => c.rarity === currentRarity);
-
-  // search filter (title only)
-  if (q) {
-    list = list.filter(c => c.title.toLowerCase().includes(q));
-  }
+  let list = (currentRarity === "All") ? CARDS.slice() : CARDS.filter(c => c.rarity === currentRarity);
+  if (q) list = list.filter(c => c.title.toLowerCase().includes(q));
 
   if (!list.length){
     $gallery.innerHTML = `<div class="haw-empty">No cards found. Try a different search or filter.</div>`;
