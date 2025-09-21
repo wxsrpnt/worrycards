@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Have A Worry — Matrix Skin</title>
+
+<!-- Matrix-y webfonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+
+<style>
+  /* ------- Theme tokens ------- */
+  :root{
+    --radius:14px;
+
+    /* Neon palette per rarity */
+    --neon:#00FF41;       /* default green */
+    --neon-cyan:#00F5FF;  /* Mythic */
+    --neon-yellow:#F8FF00;/* Legendary */
+    --neon-purple:#BB00FF;/* Epic */
+    --neon-blue:#00B3FF;  /* Rare */
+  }
+
+  html,body{height:100%}
+  body{
+    margin:0; min-height:100vh;
+    background:
+      radial-gradient(1200px 600px at 50% 0%, rgba(0,255,65,.07), transparent 60%),
+      repeating-linear-gradient(to bottom, rgba(0,255,65,.04) 0px, rgba(0,255,65,.04) 2px, transparent 3px, transparent 6px),
+      #000;
+    color:#00FF41;
+    font-family:"Matrix Sans","Share Tech Mono",ui-monospace,monospace;
+    letter-spacing:.2px;
+  }
+
+  .haw-wrap{max-width:1400px;margin:1rem auto;padding:.5rem}
+  .haw-header{text-align:center;margin-bottom:1rem;padding:1rem}
+  .haw-head{
+    font-family:"Orbitron","Matrix Sans","Share Tech Mono",monospace;
+    font-weight:600;font-size:2.2rem;margin:.25rem 0;
+    text-transform:uppercase;letter-spacing:.08em;
+    text-shadow:0 0 10px rgba(0,255,65,.35);
+  }
+  .haw-sub{max-width:65ch;margin:.25rem auto 1.25rem;color:rgba(0,255,65,.85)}
+
+  /* Controls */
+  .haw-controls{display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;margin:0 0 1rem}
+  .field{display:flex;align-items:center;gap:.5rem}
+  .field label{font-size:.9rem;color:rgba(0,255,65,.85)}
+  #q{
+    padding:.6rem .75rem;min-width:260px;color:#00FF41;background:#000;
+    border:1px solid #00FF41;border-radius:10px;
+    box-shadow:inset 0 0 12px rgba(0,255,65,.12),0 0 12px rgba(0,255,65,.18);
+  }
+  #q::placeholder{color:rgba(0,255,65,.55)}
+  #q:focus{
+    outline:2px solid #00FF41;outline-offset:2px;
+    box-shadow:0 0 18px rgba(0,255,65,.45),inset 0 0 10px rgba(0,255,65,.18);
+  }
+
+  .rarity-pills{display:flex;gap:.5rem;flex-wrap:wrap;justify-content:center;filter:drop-shadow(0 0 6px rgba(0,255,65,.25))}
+  .pill{
+    appearance:none;cursor:pointer;font-weight:700;
+    padding:.48rem .85rem;border-radius:999px;
+    color:#00FF41;background:transparent;border:1px solid #00FF41;
+    text-shadow:0 0 6px rgba(0,255,65,.25);
+  }
+  .pill:hover{box-shadow:0 0 12px rgba(0,255,65,.25)}
+  .pill[aria-pressed="true"]{background:#00FF41;color:#001400;box-shadow:0 0 18px rgba(0,255,65,.45)}
+
+  /* Grid */
+  .haw-grid{
+    display:grid;gap:16px;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    justify-content:center;justify-items:center;padding:0 1rem;
+    transition:opacity .3s ease,transform .3s ease;
+    border:1px solid rgba(0,255,65,.15);border-radius:12px;
+    background:
+      radial-gradient(800px 400px at 50% 10%, rgba(0,255,65,.07), transparent 60%),
+      repeating-linear-gradient(to right, rgba(0,255,65,.07) 0 1px, transparent 1px 40px),
+      repeating-linear-gradient(to bottom, rgba(0,255,65,.07) 0 1px, transparent 1px 40px);
+  }
+  @media(max-width:500px){.haw-grid{grid-template-columns:1fr}}
+
+  /* Card (per-card variables control color) */
+  .haw-card{
+    position:relative; isolation:isolate;
+    perspective:1200px; aspect-ratio:3/4; margin:0; width:100%;
+    transition:transform .25s ease,box-shadow .25s ease;
+    /* defaults (green) */
+    --card-outline: var(--neon);
+    --card-fg: var(--card-outline);
+  }
+  .haw-card:hover{transform:translateY(-2px);box-shadow:0 0 22px rgba(0,255,65,.25)}
+  @supports not (aspect-ratio:3/4){.haw-card::before{content:"";display:block;padding-top:133.333%}}
+
+  /* Rarity classes set per-card colors */
+  .haw-card.mythic    { --card-outline: var(--neon-cyan);   }
+  .haw-card.legendary { --card-outline: var(--neon-yellow); }
+  .haw-card.epic      { --card-outline: var(--neon-purple); }
+  .haw-card.rare      { --card-outline: var(--neon-blue);   }
+  .haw-card.common    { --card-outline: var(--neon);        }
+  .haw-card.mythic,
+  .haw-card.legendary,
+  .haw-card.epic,
+  .haw-card.rare,
+  .haw-card.common    { --card-fg: var(--card-outline);     }
+
+  /* Aura (kept green for brand pulse) */
+  .haw-card::after{
+    content:"";position:absolute;inset:-6%;
+    background:
+      radial-gradient(60% 60% at 50% 40%, rgba(0,255,65,.45), transparent 60%),
+      radial-gradient(40% 40% at 30% 70%, rgba(0,255,65,.25), transparent 60%),
+      radial-gradient(50% 50% at 70% 60%, rgba(0,255,65,.22), transparent 60%);
+    filter:blur(14px);z-index:-1;opacity:.6;animation:hawPulse 2.8s ease-in-out infinite;
+  }
+  @keyframes hawPulse{0%,100%{opacity:.45;transform:scale(.98)}50%{opacity:.75;transform:scale(1.02)}}
+
+  /* Frame uses per-card outline */
+  .haw-card>.inner{
+    position:absolute;inset:0;z-index:1;background:#000;border-radius:var(--radius);
+    border:1px solid var(--card-outline);
+    box-shadow:
+      0 0 0 1px var(--card-outline),
+      0 0 14px color-mix(in srgb, var(--card-outline) 35%, transparent),
+      0 0 32px color-mix(in srgb, var(--card-outline) 22%, transparent);
+    transform-style:preserve-3d;transition:transform .6s ease;
+  }
+  .haw-card.is-flipped>.inner{transform:rotateY(180deg)}
+  @media(prefers-reduced-motion:reduce){.haw-card>.inner{transition:none}}
+
+  .face{position:absolute;inset:0;backface-visibility:hidden;border-radius:var(--radius);overflow:hidden}
+  .face.front{display:flex;align-items:center;justify-content:center;background:#000}
+  .face.front img{width:100%;height:100%;object-fit:cover;display:block;
+    filter:contrast(1.05) saturate(1.05) drop-shadow(0 0 6px rgba(0,255,65,.12))}
+  .haw-card:hover .face.front img{transform:translate(-.25px,.25px)}
+
+  /* Back face inherits per-card text color */
+  .face.back{
+    transform:rotateY(180deg);background:#000;color:var(--card-fg);
+    padding:16px;display:flex;flex-direction:column;gap:.5rem;
+    box-shadow:inset 0 0 18px color-mix(in srgb, var(--card-outline) 20%, transparent);
+  }
+
+  .title{
+    font-family:"Orbitron","Matrix Sans","Share Tech Mono",monospace;
+    font-weight:600;font-size:1.1rem;letter-spacing:.04em;color:var(--card-fg);
+    text-shadow:0 0 8px color-mix(in srgb, var(--card-outline) 35%, transparent);
+    margin-top:.25rem;
+  }
+
+  .rarity{
+    display:inline-block;font-size:.75rem;font-weight:700;
+    padding:.22rem .5rem;border-radius:10px;color:var(--card-fg);background:transparent;
+    border:1px solid var(--card-outline);
+    box-shadow:0 0 10px color-mix(in srgb, var(--card-outline) 35%, transparent);
+  }
+
+  /* Invisible full-card button (on top) */
+  .flip-btn{
+    position:absolute;inset:0;z-index:3;background:transparent;border:0;cursor:pointer;color:transparent;
+  }
+
+  .animate-cards{animation:slideIn .6s ease-out}
+  @keyframes slideIn{0%{opacity:0;transform:translateY(20px)}100%{opacity:1;transform:translateY(0)}}
+
+  .haw-empty{background:#000;color:#00FF41;border:1px dashed rgba(0,255,65,.35);padding:1rem;text-align:center}
+</style>
+</head>
+
+<body>
+  <div class="haw-wrap">
+    <header class="haw-header">
+      <h1 class="haw-head">Have A Worry</h1>
+      <p class="haw-sub">Vintage cards re-skinned in green code. Click any card to flip.</p>
+
+      <div class="haw-controls" role="search">
+        <div class="field">
+          <label for="q">Search</label>
+          <input id="q" type="search" placeholder="Find a worry…" />
+        </div>
+      </div>
+
+      <div class="rarity-pills" role="group" aria-label="Filter by rarity">
+        <button class="pill" data-r="All" aria-pressed="true">All</button>
+        <button class="pill" data-r="Mythic" aria-pressed="false">Mythic</button>
+        <button class="pill" data-r="Legendary" aria-pressed="false">Legendary</button>
+        <button class="pill" data-r="Epic" aria-pressed="false">Epic</button>
+        <button class="pill" data-r="Rare" aria-pressed="false">Rare</button>
+        <button class="pill" data-r="Common" aria-pressed="false">Common</button>
+      </div>
+    </header>
+
+    <section class="haw-grid" id="gallery" aria-live="polite"></section>
+  </div>
+
+<script>
+/* ---------- Where your images live ---------- */
+/* On Vercel, /public/cards → served at /cards */
+const IMG_BASE = "/cards/";
+
+/* ---------- Card manifest (webp, with rarity) ---------- */
+const CARDS = [
+  // Mythic
+  { id: 1,  title: "Death",            filename: "1-death.webp",            rarity: "Mythic" },
+  { id: 2,  title: "Aging",            filename: "2-aging.webp",            rarity: "Mythic" },
+  { id: 51, title: "Irrelevance",      filename: "51-irrelevance.webp",     rarity: "Mythic" },
+
+  // Legendary
+  { id: 3,  title: "Climate Change",   filename: "3-climate-change.webp",   rarity: "Legendary" },
+  { id: 4,  title: "Capitalism",       filename: "4-capitalism.webp",       rarity: "Legendary" },
+  { id: 5,  title: "Fascism",          filename: "5-fascism.webp",          rarity: "Legendary" },
+  { id: 6,  title: "Communism",        filename: "6-communism.webp",        rarity: "Legendary" },
+  { id: 7,  title: "Socialism",        filename: "7-socialism.webp",        rarity: "Legendary" },
+  { id: 8,  title: "Loss Of Trust",    filename: "8-loss-of-trust.webp",    rarity: "Legendary" },
+
+  // Epic
+  { id: 9,  title: "Loss Of Morality", filename: "9-loss-of-morality.webp", rarity: "Epic" },
+  { id:10,  title: "War",              filename: "10-war.webp",             rarity: "Epic" },
+  { id:11,  title: "Surveillance",     filename: "11-surveillance.webp",    rarity: "Epic" },
+  { id:12,  title: "Guns",             filename: "12-guns.webp",            rarity: "Epic" },
+  { id:13,  title: "Gun Control",      filename: "13-gun-control.webp",     rarity: "Epic" },
+  { id:14,  title: "Deportation",      filename: "14-deportation.webp",     rarity: "Epic" },
+  { id:15,  title: "Division",         filename: "15-division.webp",        rarity: "Epic" },
+  { id:16,  title: "Corruption",       filename: "16-corruption.webp",      rarity: "Epic" },
+  { id:17,  title: "Racism",           filename: "17-racism.webp",          rarity: "Epic" },
+  { id:18,  title: "Addiction",        filename: "18-addiction.webp",       rarity: "Epic" },
+
+  // Rare
+  { id:19,  title: "Automation",       filename: "19-automation.webp",      rarity: "Rare" },
+  { id:20,  title: "Education",        filename: "20-education.webp",       rarity: "Rare" },
+  { id:21,  title: "Illness",          filename: "21-illness.webp",         rarity: "Rare" },
+  { id:22,  title: "Loss Of Faith",    filename: "22-loss-of-faith.webp",   rarity: "Rare" },
+  { id:23,  title: "Violence",         filename: "23-violence.webp",        rarity: "Rare" },
+  { id:24,  title: "Bills",            filename: "24-bills.webp",           rarity: "Rare" },
+  { id:25,  title: "Parenting",        filename: "25-parenting.webp",       rarity: "Rare" },
+  { id:26,  title: "Equity",           filename: "26-equity.webp",          rarity: "Rare" },
+  { id:27,  title: "Bankruptcy",       filename: "27-bankruptcy.webp",      rarity: "Rare" },
+  { id:28,  title: "Retirement",       filename: "28-retirement.webp",      rarity: "Rare" },
+  { id:29,  title: "Billionaires",     filename: "29-billionaires.webp",    rarity: "Rare" },
+  { id:30,  title: "Natural Disaster", filename: "30-natural-disaster.webp",rarity: "Rare" },
+  { id:31,  title: "Crime",            filename: "31-crime.webp",           rarity: "Rare" },
+  { id:32,  title: "Privacy",          filename: "32-privacy.webp",         rarity: "Rare" },
+
+  // Common
+  { id:33,  title: "Hunger",           filename: "33-hunger.webp",          rarity: "Common" },
+  { id:34,  title: "Homeless",         filename: "34-homeless.webp",        rarity: "Common" },
+  { id:35,  title: "Providing",        filename: "35-providing.webp",       rarity: "Common" },
+  { id:36,  title: "Rent",             filename: "36-rent.webp",            rarity: "Common" },
+  { id:37,  title: "Debt",             filename: "37-debt.webp",            rarity: "Common" },
+  { id:38,  title: "Inflation",        filename: "38-inflation.webp",       rarity: "Common" },
+  { id:39,  title: "Burnout",          filename: "39-burnout.webp",         rarity: "Common" },
+  { id:40,  title: "Free Time",        filename: "40-free-time.webp",       rarity: "Common" },
+  { id:41,  title: "Insomnia",         filename: "41-insomnia.webp",        rarity: "Common" },
+  { id:42,  title: "Appearance",       filename: "42-appearance.webp",      rarity: "Common" },
+  { id:43,  title: "Abuse",            filename: "43-abuse.webp",           rarity: "Common" },
+  { id:44,  title: "Inadequacy",       filename: "44-inadequacy.webp",      rarity: "Common" },
+  { id:45,  title: "Guilt",            filename: "45-guilt.webp",           rarity: "Common" },
+  { id:46,  title: "Loneliness",       filename: "46-loneliness.webp",      rarity: "Common" },
+  { id:47,  title: "Screentime",       filename: "47-screentime.webp",      rarity: "Common" },
+  { id:48,  title: "Comparison",       filename: "48-comparison.webp",      rarity: "Common" },
+  { id:49,  title: "Accidents",        filename: "49-accidents.webp",       rarity: "Common" },
+  { id:50,  title: "Infidelity",       filename: "50-infidelity.webp",      rarity: "Common" }
+];
+
+/* ---------- Search & render plumbing ---------- */
+function defaultBlurb(t){
+  const lines=[
+    `${t} arrives softly, then refuses to leave.`,
+    `${t} hides in the margins until the lights go out.`,
+    `${t} hums like a transformer somewhere down the block.`,
+    `${t} trades today’s calm for tomorrow’s questions.`,
+    `${t} is easier to share than to solve.`
+  ];
+  return lines[Math.floor(Math.random()*lines.length)];
+}
+
+let currentQuery = "";
+let currentRarity = "All";
+
+const $gallery = document.getElementById("gallery");
+const $query   = document.getElementById("q");
+const $pills   = document.querySelectorAll(".pill");
+
+function cardHTML(c){
+  // add a rarity class to drive per-card colors
+  const rClass = c.rarity.toLowerCase(); // mythic|legendary|epic|rare|common
+  const badgeClass =
+    c.rarity==="Mythic"    ? "badge-mythic" :
+    c.rarity==="Legendary" ? "badge-legendary" :
+    c.rarity==="Epic"      ? "badge-epic" :
+    c.rarity==="Rare"      ? "badge-rare" : "badge-common";
+
+  return `
+  <figure class="haw-card ${rClass}">
+    <div class="inner">
+      <div class="face front">
+        <img loading="lazy" decoding="async" src="${IMG_BASE + c.filename}" alt="${c.title} — card illustration">
+      </div>
+      <figcaption class="face back">
+        <span class="rarity ${badgeClass}">${c.rarity}</span>
+        <div class="title">${c.title}</div>
+        <p>${defaultBlurb(c.title)}</p>
+      </figcaption>
+    </div>
+    <button class="flip-btn" aria-label="Flip card: ${c.title}" aria-pressed="false"></button>
+  </figure>`;
+}
+
+function render(){
+  const q = currentQuery.trim().toLowerCase();
+
+  // rarity filter
+  let list = (currentRarity === "All")
+    ? CARDS.slice()
+    : CARDS.filter(c => c.rarity === currentRarity);
+
+  // search filter (title only)
+  if (q) {
+    list = list.filter(c => c.title.toLowerCase().includes(q));
+  }
+
+  if (!list.length){
+    $gallery.innerHTML = `<div class="haw-empty">No cards found. Try a different search or filter.</div>`;
+    return;
+  }
+
+  $gallery.innerHTML = list.map(c => cardHTML(c)).join("");
+  $gallery.classList.remove("animate-cards"); void $gallery.offsetWidth; $gallery.classList.add("animate-cards");
+
+  // flip handlers
+  $gallery.querySelectorAll(".haw-card").forEach(cardEl=>{
+    const btn = cardEl.querySelector(".flip-btn");
+    btn.addEventListener("click", ()=>{
+      const flipped = cardEl.classList.toggle("is-flipped");
+      btn.setAttribute("aria-pressed", flipped ? "true" : "false");
+    });
+    btn.addEventListener("keydown", e=>{
+      if(e.key==="Enter"||e.key===" "){ e.preventDefault(); btn.click(); }
+    });
+  });
+}
+
+/* events */
+$query.addEventListener("input", (e)=>{ currentQuery = e.target.value; render(); });
+$pills.forEach(btn=>{
+  btn.addEventListener("click", ()=>{
+    $pills.forEach(b=>b.setAttribute("aria-pressed","false"));
+    btn.setAttribute("aria-pressed","true");
+    currentRarity = btn.dataset.r;
+    render();
+  });
+  btn.addEventListener("keydown", (e)=>{
+    if(e.key==="Enter"||e.key===" "){ e.preventDefault(); btn.click(); }
+  });
+});
+
+/* initial render */
+render();
+</script>
+</body>
+</html>
