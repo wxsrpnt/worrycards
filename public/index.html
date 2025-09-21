@@ -52,11 +52,12 @@
   .haw-head{
     font-family:"Pacifico", "Orbitron", "Share Tech Mono", monospace;
     font-weight:400;
-    font-size:var(--title-size);
+    font-size:clamp(2.0rem, 6.5vw + 0.5rem, 4.75rem); /* adjusted */
     margin:.25rem 0;
     letter-spacing:.06em;
     text-shadow:0 0 14px rgba(0,255,65,.35);
-  }
+    white-space: nowrap; /* new */
+}
 
   .haw-sub{
     max-width:68ch;margin:.35rem auto 1.25rem;
@@ -210,7 +211,7 @@
       <!-- Socials button (left) -->
       <a href="https://x.com/0xDobbs" target="_blank" rel="noopener" class="haw-btn haw-btn-left">Socials</a>
 
-      <h1 class="haw-head">Have a Worry!</h1>
+      <h1 class="haw-head">Have&nbsp;a&nbsp;Worry!</h1>
       <p class="haw-sub">
         A collectible gallery of modern anxieties. 
         Worry isn’t “good,” but here it’s useful—awareness is the first line of defense.
