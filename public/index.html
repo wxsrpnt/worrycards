@@ -5,6 +5,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Have A Worry — Matrix Skin</title>
 
+<!-- Favicons / PWA -->
+<link rel="icon" href="/favicon.ico">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<meta name="theme-color" content="#00FF41">
+
 <!-- Fonts -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -38,10 +46,10 @@
 
   /* ---------- Header & CTAs ---------- */
   .haw-header{
-    position:relative; /* lets us place corner CTAs */
+    position:relative; /* place corner CTAs */
     text-align:center;
     margin-bottom:1rem;
-    padding: 2.75rem 1rem 1.25rem; /* top padding gives room for corner buttons */
+    padding: 2.75rem 1rem 1.25rem; /* room for corner buttons */
   }
   .haw-head{
     font-family:"Pacifico", "Orbitron", "Share Tech Mono", monospace;
@@ -73,7 +81,6 @@
     border:2px solid #00FF41;
     border-radius:12px;
     padding:.5rem .85rem;
-    /* size scales with viewport; stays readable on mobile */
     font-size: clamp(.9rem, 1.6vw, 1.15rem);
     box-shadow:
       0 0 0 1px #00FF41,
@@ -130,9 +137,7 @@
       repeating-linear-gradient(to right, rgba(0,255,65,.07) 0 1px, transparent 1px 40px),
       repeating-linear-gradient(to bottom, rgba(0,255,65,.07) 0 1px, transparent 1px 40px);
   }
-  @media(max-width:500px){
-    .haw-grid{grid-template-columns:1fr}
-  }
+  @media(max-width:500px){ .haw-grid{grid-template-columns:1fr} }
 
   /* Card */
   .haw-card{
@@ -144,7 +149,7 @@
   .haw-card:hover{transform:translateY(-2px);box-shadow:0 0 22px rgba(0,255,65,.25)}
   @supports not (aspect-ratio:1150/1650){.haw-card::before{content:"";display:block;padding-top:143.478%}}
 
-  /* Neon aura (kept green for brand pulse) */
+  /* Neon aura */
   .haw-card::after{
     content:"";position:absolute;inset:-6%;
     background:
@@ -154,7 +159,7 @@
   }
   @keyframes hawPulse{0%,100%{opacity:.45;transform:scale(.98)}50%{opacity:.75;transform:scale(1.02)}}
 
-  /* Per-card outline (via inline --outline) */
+  /* Per-card outline via --outline */
   .haw-card>.inner{
     position:absolute;inset:0;z-index:1;background:#000;border-radius:var(--radius);
     border:1px solid var(--outline, #00FF41);
@@ -169,7 +174,7 @@
 
   .face{position:absolute;inset:0;backface-visibility:hidden;border-radius:var(--radius);overflow:hidden}
 
-  /* FRONT: show full artwork without cropping */
+  /* FRONT: no-crop view */
   .face.front{
     display:flex;align-items:center;justify-content:center;background:#000;
   }
@@ -197,7 +202,7 @@
     border-radius:var(--radius);
   }
 
-  /* Invisible full-card button (on top) */
+  /* Full-card invisible button */
   .flip-btn{
     position:absolute;inset:0;z-index:3;background:transparent;border:0;cursor:pointer;color:transparent;
   }
@@ -207,7 +212,7 @@
 
   .haw-empty{background:#000;color:#00FF41;border:1px dashed rgba(0,255,65,.35)}
 
-  /* Smaller phones: ease the title a bit */
+  /* Smaller phones */
   @media (max-width: 360px){
     .haw-head{ font-size: clamp(2.2rem, 7.2vw + 0.6rem, 3.6rem); }
     .cta-btn{ font-size: clamp(.8rem, 3.4vw, 1rem); padding:.4rem .7rem; }
@@ -265,7 +270,155 @@ const OUTLINE_BY_RARITY = {
   All:       "#00FF41"
 };
 
-/* Card manifest (.webp) — note corrected spellings Homeless/Loneliness */
+/* Card manifest (.webp). Optional 'back' lets you override the auto-derived name. */
 const CARDS = [
   // Mythic
-  { id: 1, 
+  { id: 1,  title: "Death",            filename: "1-death.webp",            rarity: "Mythic" },
+  { id: 2,  title: "Aging",            filename: "2-aging.webp",            rarity: "Mythic" },
+  { id: 51, title: "Irrelevance",      filename: "51-irrelevance.webp",     rarity: "Mythic" },
+
+  // Legendary
+  { id: 3,  title: "Climate Change",   filename: "3-climate-change.webp",   rarity: "Legendary" },
+  { id: 4,  title: "Capitalism",       filename: "4-capitalism.webp",       rarity: "Legendary" },
+  { id: 5,  title: "Fascism",          filename: "5-fascism.webp",          rarity: "Legendary" },
+  { id: 6,  title: "Communism",        filename: "6-communism.webp",        rarity: "Legendary" },
+  { id: 7,  title: "Socialism",        filename: "7-socialism.webp",        rarity: "Legendary" },
+  { id: 8,  title: "Loss Of Trust",    filename: "8-loss-of-trust.webp",    rarity: "Legendary" },
+
+  // Epic
+  { id: 9,  title: "Loss Of Morality", filename: "9-loss-of-morality.webp", rarity: "Epic" },
+  { id:10,  title: "War",              filename: "10-war.webp",             rarity: "Epic" },
+  { id:11,  title: "Surveillance",     filename: "11-surveillance.webp",    rarity: "Epic" },
+  { id:12,  title: "Guns",             filename: "12-guns.webp",            rarity: "Epic" },
+  { id:13,  title: "Gun Control",      filename: "13-gun-control.webp",     rarity: "Epic" },
+  { id:14,  title: "Deportation",      filename: "14-deportation.webp",     rarity: "Epic" },
+  { id:15,  title: "Division",         filename: "15-division.webp",        rarity: "Epic" },
+  { id:16,  title: "Corruption",       filename: "16-corruption.webp",      rarity: "Epic" },
+  { id:17,  title: "Racism",           filename: "17-racism.webp",          rarity: "Epic" },
+  { id:18,  title: "Addiction",        filename: "18-addiction.webp",       rarity: "Epic" },
+
+  // Rare
+  { id:19,  title: "Automation",       filename: "19-automation.webp",      rarity: "Rare" },
+  { id:20,  title: "Education",        filename: "20-education.webp",       rarity: "Rare" },
+  { id:21,  title: "Illness",          filename: "21-illness.webp",         rarity: "Rare" },
+  { id:22,  title: "Loss Of Faith",    filename: "22-loss-of-faith.webp",   rarity: "Rare" },
+  { id:23,  title: "Violence",         filename: "23-violence.webp",        rarity: "Rare" },
+  { id:24,  title: "Bills",            filename: "24-bills.webp",           rarity: "Rare" },
+  { id:25,  title: "Parenting",        filename: "25-parenting.webp",       rarity: "Rare" },
+  { id:26,  title: "Equity",           filename: "26-equity.webp",          rarity: "Rare" },
+  { id:27,  title: "Bankruptcy",       filename: "27-bankruptcy.webp",      rarity: "Rare" },
+  { id:28,  title: "Retirement",       filename: "28-retirement.webp",      rarity: "Rare" },
+  { id:29,  title: "Billionaires",     filename: "29-billionaires.webp",    rarity: "Rare" },
+  { id:30,  title: "Natural Disaster", filename: "30-natural-disaster.webp",rarity: "Rare" },
+  { id:31,  title: "Crime",            filename: "31-crime.webp",           rarity: "Rare" },
+  { id:32,  title: "Privacy",          filename: "32-privacy.webp",         rarity: "Rare" },
+
+  // Common (with corrected spellings)
+  { id:33,  title: "Hunger",           filename: "33-hunger.webp",          rarity: "Common" },
+  { id:34,  title: "Homeless",         filename: "34-homeless.webp",        rarity: "Common" },
+  { id:35,  title: "Providing",        filename: "35-providing.webp",       rarity: "Common" },
+  { id:36,  title: "Rent",             filename: "36-rent.webp",            rarity: "Common" },
+  { id:37,  title: "Debt",             filename: "37-debt.webp",            rarity: "Common" },
+  { id:38,  title: "Inflation",        filename: "38-inflation.webp",       rarity: "Common" },
+  { id:39,  title: "Burnout",          filename: "39-burnout.webp",         rarity: "Common" },
+  { id:40,  title: "Free Time",        filename: "40-free-time.webp",       rarity: "Common" },
+  { id:41,  title: "Insomnia",         filename: "41-insomnia.webp",        rarity: "Common" },
+  { id:42,  title: "Appearance",       filename: "42-appearance.webp",      rarity: "Common" },
+  { id:43,  title: "Abuse",            filename: "43-abuse.webp",           rarity: "Common" },
+  { id:44,  title: "Inadequacy",       filename: "44-inadequacy.webp",      rarity: "Common" },
+  { id:45,  title: "Guilt",            filename: "45-guilt.webp",           rarity: "Common" },
+  { id:46,  title: "Loneliness",       filename: "46-loneliness.webp",      rarity: "Common" },
+  { id:47,  title: "Screentime",       filename: "47-screentime.webp",      rarity: "Common" },
+  { id:48,  title: "Comparison",       filename: "48-comparison.webp",      rarity: "Common" },
+  { id:49,  title: "Accidents",        filename: "49-accidents.webp",       rarity: "Common" },
+  { id:50,  title: "Infidelity",       filename: "50-infidelity.webp",      rarity: "Common" }
+];
+
+/* Build back filename from front: "x.webp" -> "x-back.webp" (can be overridden via c.back) */
+function deriveBack(frontFile){ return frontFile.replace(/\.webp$/i, "-back.webp"); }
+
+/* State */
+let currentQuery = "";
+let currentRarity = "All";
+
+const $gallery = document.getElementById("gallery");
+const $query   = document.getElementById("q");
+const $pills   = document.querySelectorAll(".pill");
+
+function outlineFor(rarity){ return OUTLINE_BY_RARITY[rarity] || OUTLINE_BY_RARITY.Common; }
+
+/* robust back loader: tries primary back, then swaps to generic */
+function backImgTag(c){
+  const backFile = (c.back && c.back.trim()) ? c.back : deriveBack(c.filename);
+  const primary  = IMG_BASE + backFile;
+  const generic  = IMG_BASE + "card-back-generic.webp";
+  // onerror swaps to generic and then disables itself to avoid loops
+  return `<img loading="lazy" decoding="async"
+              src="${primary}"
+              alt="${c.title} — card back"
+              onerror="this.onerror=null;this.src='${generic}'">`;
+}
+
+function cardHTML(c){
+  const outline = outlineFor(c.rarity);
+  return `
+  <figure class="haw-card" style="--outline:${outline}">
+    <div class="inner">
+      <div class="face front">
+        <img loading="lazy" decoding="async"
+             src="${IMG_BASE + c.filename}" alt="${c.title} — card front">
+      </div>
+      <div class="face back">
+        ${backImgTag(c)}
+      </div>
+    </div>
+    <button class="flip-btn" aria-label="Flip card: ${c.title}" aria-pressed="false"></button>
+  </figure>`;
+}
+
+function render(){
+  const q = currentQuery.trim().toLowerCase();
+
+  let list = (currentRarity === "All") ? CARDS.slice() : CARDS.filter(c => c.rarity === currentRarity);
+  if (q) list = list.filter(c => c.title.toLowerCase().includes(q));
+
+  if (!list.length){
+    $gallery.innerHTML = `<div class="haw-empty">No cards found. Try a different search or filter.</div>`;
+    return;
+  }
+
+  $gallery.innerHTML = list.map(c => cardHTML(c)).join("");
+  $gallery.classList.remove("animate-cards"); void $gallery.offsetWidth; $gallery.classList.add("animate-cards");
+
+  // flip handlers
+  $gallery.querySelectorAll(".haw-card").forEach(cardEl=>{
+    const btn = cardEl.querySelector(".flip-btn");
+    btn.addEventListener("click", ()=>{
+      const flipped = cardEl.classList.toggle("is-flipped");
+      btn.setAttribute("aria-pressed", flipped ? "true" : "false");
+    });
+    btn.addEventListener("keydown", e=>{
+      if(e.key==="Enter"||e.key===" "){ e.preventDefault(); btn.click(); }
+    });
+  });
+}
+
+/* events */
+$query.addEventListener("input", (e)=>{ currentQuery = e.target.value; render(); });
+$pills.forEach(btn=>{
+  btn.addEventListener("click", ()=>{
+    $pills.forEach(b=>b.setAttribute("aria-pressed","false"));
+    btn.setAttribute("aria-pressed","true");
+    currentRarity = btn.dataset.r;
+    render();
+  });
+  btn.addEventListener("keydown", (e)=>{
+    if(e.key==="Enter"||e.key===" "){ e.preventDefault(); btn.click(); }
+  });
+});
+
+/* initial render */
+render();
+</script>
+</body>
+</html>
