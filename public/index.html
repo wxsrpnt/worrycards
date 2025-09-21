@@ -12,7 +12,8 @@
 
 <style>
   :root{
-    --radius:14px;
+    /* Sharp edges for hacker vibe */
+    --radius:0px;
 
     /* Neon palette for outlines & text */
     --neon:#00FF41;         /* default green */
@@ -47,7 +48,8 @@
   .haw-sub{
     max-width:68ch;margin:.35rem auto 1.25rem;
     color:rgba(0,255,65,.85);
-    font-size:1rem;
+    font-size:clamp(.95rem, .5vw + .7rem, 1.15rem);
+    text-wrap:pretty;
   }
 
   /* Controls */
@@ -126,30 +128,42 @@
   .face.front{
     display:flex;align-items:center;justify-content:center;background:#000;
   }
-  /* Show full artwork without cropping */
+
+  /* FULL-BLEED ART:
+     - Default: cover (fills card, may crop a hair)
+     - Tiny screens (<480px): contain (no crop, may letterbox) */
   .face.front img{
-    width:100%; height:100%;
-    object-fit:contain;
+    width:100%; height:100%; object-fit:cover; object-position:center;
     display:block;
     filter:contrast(1.05) saturate(1.05) drop-shadow(0 0 6px rgba(0,255,65,.12));
     background:#000;
   }
+  @media (max-width:480px){
+    .face.front img{ object-fit:contain; }
+  }
+
   .haw-card:hover .face.front img{transform:translate(-.25px,.25px)}
 
+  /* Back face uses grid to keep title+badge fixed and blurb flexible */
   .face.back{
     transform:rotateY(180deg);
     background:#000;
-    color:var(--outline, #00FF41);  /* match rarity color */
-    padding:16px; display:flex; flex-direction:column; gap:.5rem;
-    box-shadow:inset 0 0 18px rgba(0,255,65,.08)
+    color:var(--outline, #00FF41);
+    padding:16px;
+    display:grid;
+    grid-template-rows:auto auto 1fr; /* rarity, title, blurb fills */
+    gap:.5rem;
+    box-shadow:inset 0 0 18px rgba(0,255,65,.08);
   }
 
   .title{
     font-family:"Pacifico","Orbitron","Share Tech Mono",monospace;
-    font-weight:400; font-size:1.1rem; letter-spacing:.02em;
+    font-weight:400;
+    font-size:clamp(1rem, .8vw + .6rem, 1.25rem);
+    letter-spacing:.02em;
     color:var(--outline, #00FF41);
     text-shadow:0 0 8px color-mix(in srgb, var(--outline, #00FF41) 35%, transparent);
-    margin-top:.25rem;
+    margin-top:.1rem;
   }
 
   .rarity{
@@ -157,7 +171,21 @@
     padding:.22rem .5rem;border-radius:10px;
     color:var(--outline, #00FF41); background:transparent;
     border:1px solid var(--outline, #00FF41);
-    box-shadow:0 0 10px color-mix(in srgb, var(--outline, #00FF41) 35%, transparent);
+    box-shadow:0 0 10px color-mix(in srgb, var(--outline, #00FF41) 35%, transparent)
+  }
+
+  /* Blurb: fluid type + soft clamp + only scroll if necessary */
+  .face.back p{
+    margin:0;
+    font-size:clamp(.82rem, .9vw + .35rem, 1.05rem);
+    line-height:1.35;
+    text-wrap:pretty;
+    overflow:auto;          /* only appears if really needed */
+    scrollbar-width:thin;   /* Firefox */
+  }
+  .face.back p::-webkit-scrollbar{ width:8px }
+  .face.back p::-webkit-scrollbar-thumb{
+    background:rgba(0,255,65,.25); border-radius:8px
   }
 
   .flip-btn{
@@ -278,179 +306,72 @@ const CARDS = [
   { id:50,  title: "Infidelity",       filename: "50-infidelity.webp",      rarity: "Common" }
 ];
 
-/* Base blurbs (facts/tone) */
+/* Preloaded blurbs (context → study nod → quip). */
 const BLURBS = {
-  "Death": "Every culture faces mortality; studies in terror management theory show that acknowledging death can reduce avoidance and sharpen values. The timer makes the moments taste sweeter.",
-  "Aging": "Senescent cells and DNA wear drive decline; gerontology links aging with reduced repair capacity. Old code still runs—it just needs gentler inputs.",
-  "Irrelevance": "In attention economies, social comparison research shows relevance is felt more than measured. Trend lines fade—but your ripple doesn’t.",
-  "Climate Change": "CO₂, heatwaves, and glacier loss tell one story; climate science calls it a health issue too. When the house is warming, you move the valuables—then the habits.",
-  "Capitalism": "Markets spark innovation and inequality; decades of data show widening wealth gaps erode trust. Great engine—terrible seatbelts.",
-  "Fascism": "History shows authoritarian promises during crises; political science links it to suppressed dissent. Order without oxygen isn’t order—it’s sleep.",
-  "Communism": "Collective ideals met centralized power; 20th-century trials showed shortages and fear—but also lifted literacy. Equal tables still need free chairs.",
-  "Socialism": "Countries with strong safety nets show better health and education outcomes. Sharing risk works—so does leaving the door unlocked for ambition.",
-  "Loss Of Trust": "Institutional failure predicts anxiety spikes; social psych ties betrayal to vigilance. Trust grows slow, breaks quick, and bills interest.",
-  "Loss Of Morality": "Moral injury research shows harm when values and actions collide. When the compass stutters, you chart by stars.",
-  "War": "PTSD and displacement echo for generations; public health tracks conflict like a disease. War ends on paper—echoes don’t.",
-  "Surveillance": "Behavior changes under observation; privacy research shows autonomy shrinks when watched. The lens is small; the shadow is huge.",
-  "Guns": "Higher prevalence correlates with more accidental deaths; public health keeps finding the same curve. Tools remember what hands forget.",
-  "Gun Control": "Policy analyses tie certain regulations to fewer homicides and suicides. Guardrails don’t slow you much—just keep you on the road.",
-  "Deportation": "Family separation links to trauma and economic loss; migration studies catalogue the scars. Borders cut paper first, people next.",
-  "Division": "Polarization research tracks declining wellbeing in split communities. Fractures let light in—and also the weather.",
-  "Corruption": "Transparency indices mirror trust; corruption taxes the poor in quiet ways. A crooked path still leads somewhere—usually downhill.",
-  "Racism": "From maternal mortality to housing, disparities prove structure matters. Systemic problems don’t fix with personal pep talks.",
-  "Addiction": "Compulsion rewires reward circuits; treatment works best with compassion plus structure. Cravings speak data—learn the dialect.",
-  "Automation": "Tasks get replaced faster than jobs; reskilling buffers the shock. Let the robots lift weight—not purpose.",
-  "Education": "More schooling, less poverty; better learning, better health—this is one of the sturdy graphs. Degrees are paper—literacy is armor.",
-  "Illness": "Chronic disease multiplies stress; support and access improve outcomes. Bodies glitch—souls patch.",
-  "Loss Of Faith": "Belief often wobbles after trauma; meaning can rebuild through community and practice. Doubt is a door—use the handle.",
-  "Violence": "Exposure predicts long-term harm; prevention reduces it more than punishment after. Hurt people hurt people—helped people help.",
-  "Bills": "Cost-of-living squeezes mental health; budgeting and aid change the slope. The envelope isn’t heavy—until there are ten.",
-  "Parenting": "Caregiving strain is real; warmth and consistency still outperform perfection. Little mirrors notice how you breathe.",
-  "Equity": "Fair access correlates with healthier societies; unequal ladders waste talent. Level ground grows bigger forests.",
-  "Bankruptcy": "Financial collapse raises anxiety and depression; relief policies shorten the hole. Sometimes you reset the game to keep playing.",
-  "Retirement": "Uncertain savings raise stress; stable pensions cut worry. Exit signs feel safer with daylight.",
-  "Billionaires": "Wealth concentration rises as mobility stalls; inequality aggravates social risk. One rocket doesn’t lift the village.",
-  "Natural Disaster": "Early warnings save lives; climate amplifies extremes. Nature doesn’t negotiate—but neighbors do.",
-  "Crime": "Rates map onto poverty and disconnection; community investment lowers both. Lock the door, open the block.",
-  "Privacy": "Autonomy needs a private room; breaches cost more than data. What’s yours is sacred—even if searchable.",
-  "Hunger": "Food insecurity stunts health and learning; targeted aid fixes it fast. Empty plates echo in report cards.",
-  "Homless": "Housing-first models improve outcomes; unsheltered life shortens life. A key can be medicine.",
-  "Providing": "Care providers burn out without support; shared load prolongs care. Strong backs still need chairs.",
-  "Rent": "Rent burden over 30% predicts stress; protections flatten the spikes. Home shouldn’t feel like a monthly cliff.",
-  "Debt": "Owing tracks with anxiety and poorer sleep; clear plans reduce both. Interest compounds—so can hope.",
-  "Inflation": "Prices up, purchasing down; lowest incomes get hit first. When bread is dear, budgets learn ballet.",
-  "Burnout": "Work strain meets low control; rest and boundaries are treatment, not dessert. You’re not a battery—you’re a garden.",
-  "Free Time": "Leisure restores cognition and mood; even short breaks help. Idle isn’t empty—it’s charging.",
-  "Insomnia": "Poor sleep tanks learning and mood; hygiene and therapy lift it. Night is loud when the brain won’t blink.",
-  "Appearance": "Body image pressure cuts confidence; representation softens the blow. Mirrors report, not decide.",
-  "Abuse": "Trauma lingers unless treated; safety plus support rewires futures. Survival is a skill set—healing is a craft.",
-  "Inadequacy": "Scrolling highlights fuels ‘not enough’; self-compassion practices work. You’re comparing drafts to finished albums.",
-  "Guilt": "Healthy guilt nudges repair; chronic guilt corrodes joy. Apologize, adjust, advance.",
-  "Lonliness": "Isolation harms like smoking; connection is literal medicine. Community is cardio for the soul.",
-  "Screentime": "Excess usage links to sleep and attention issues; mindful breaks help. Your thumb is not your boss.",
-  "Comparison": "Social comparison reduces happiness; gratitude stabilizes it. Scoreboards are optional—meaning isn’t.",
-  "Accidents": "Tiny safety upgrades cut big risks; awareness matters. Luck favors the padded corner.",
-  "Infidelity": "Betrayal wounds deep; honest work can rebuild trust. Broken doesn’t mean unusable—ask kintsugi."
+  "Death": "Ever wonder how close you are to the end? Every culture faces mortality; studies in terror management theory show that acknowledging death can reduce avoidance and sharpen values. The timer makes the moments taste sweeter—so when’s your final act?",
+  "Aging": "Worried your warranty expired? Senescent cells and DNA wear drive decline; gerontology links aging with reduced repair capacity. The code still runs—just handle with care.",
+  "Irrelevance": "Afraid the feed forgets you? In attention economies, social comparison research shows relevance is felt more than measured. Trends vanish, fingerprints last—will yours?",
+  "Climate Change": "Hot enough for panic? CO₂, heatwaves, and glacier loss tell one story; climate science frames it as a health crisis too. If the house is warming, what do you move first?",
+  "Capitalism": "Is the ladder missing rungs? Markets fuel innovation—and inequality that erodes trust. Great engine, cheap seatbelts—are you buckled?",
+  "Fascism": "Trading liberty for order? History shows strongmen bloom in crises; suppressed dissent is the cost. Order without oxygen suffocates—ready to breathe?",
+  "Communism": "Perfect plan, messy people? Collective ideals met centralized force; literacy rose, freedoms fell. Equal tables need free chairs—who sets yours?",
+  "Socialism": "Safety net or hammock? Stronger nets correlate with better health and education outcomes. Share the risk, keep the spark—deal?",
+  "Loss Of Trust": "Who’s still honest? Institutional failures spike anxiety; betrayal breeds vigilance. Trust grows slow, breaks fast—got glue?",
+  "Loss Of Morality": "Does your compass wobble? Moral injury shows harm when actions violate values. When true north flickers, what stars guide you?",
+  "War": "Peace on paper only? PTSD and displacement echo for generations; conflict spreads like disease. Treat the wound or the scar wins.",
+  "Surveillance": "Feel watched? Being observed shifts behavior; autonomy shrinks under constant gaze. The lens is tiny; the shadow isn’t—duck or dance?",
+  "Guns": "Tool or ticking worry? More guns correlate with more accidental deaths. Tools remember what hands forget—steady enough?",
+  "Gun Control": "Do guardrails help? Certain policies associate with fewer homicides and suicides. Rails don’t slow you much—just the plunge.",
+  "Deportation": "What happens to the kids? Separation links to trauma and economic damage. Borders cut paper first, people next—whose line is it?",
+  "Division": "Team red or blue bruise? Polarization drags wellbeing down. Cracks let light in—and storms—umbrella ready?",
+  "Corruption": "How much goes missing? Transparency scores mirror trust; the poor pay the hidden tax. Crooked paths go downhill—want brakes?",
+  "Racism": "Same rules, different roads? From health to housing, disparities persist. Systems need fixes, not pep talks—what’s your patch?",
+  "Addiction": "Who’s driving—craving or you? Compulsion rewires reward; structure plus compassion works. Speak recovery’s dialect—fluent yet?",
+  "Automation": "Will a bot take it? Tasks vanish faster than jobs; reskilling dulls the shock. Let robots lift weight, not meaning—what’s yours?",
+  "Education": "Diploma or defense? Schooling reduces poverty and boosts health. Degrees are paper; literacy is armor—suited up?",
+  "Illness": "Body buffering? Chronic conditions amplify stress; access and support improve outcomes. Glitches happen—got backups?",
+  "Loss Of Faith": "Who’s listening upstairs? Doubt spikes after trauma; community rebuilds meaning. Doors close; rituals find windows—try one?",
+  "Violence": "Cycle or stop sign? Exposure harms long-term; prevention beats punishment. Heal the root or prune forever?",
+  "Bills": "Envelope anxiety? Cost-of-living strains mental health; plans and aid change the slope. Ten light papers, heavy mind—balance due?",
+  "Parenting": "Any manuals included? Strain is real; warmth beats perfection. Little mirrors learn your breathing—steady?",
+  "Equity": "Fair shot or fairytale? Access links to healthier societies; unequal ladders waste talent. Level ground grows forests—plant?",
+  "Bankruptcy": "Game over or reset? Financial collapse raises anxiety; relief policies shorten the hole. Continue? Insert grace.",
+  "Retirement": "Enough tucked away? Uncertain savings raise stress; stable pensions soothe. Exits feel safer in daylight—check bulbs?",
+  "Billionaires": "Rockets for whom? Wealth concentration rises as mobility stalls. One launch won’t lift the village—who fuels the streetlights?",
+  "Natural Disaster": "Is the sky mad? Early warnings save lives; extremes are amplifying. Nature doesn’t negotiate—neighbors do—met yours?",
+  "Crime": "Lock or look out? Rates map to poverty and disconnection; investment lowers both. Bolt the door, open the block—walk?",
+  "Privacy": "Who’s reading? Autonomy needs a private room; breaches cost more than data. What’s yours is sacred—even if searchable.",
+  "Hunger": "What’s for dinner—nothing? Food insecurity dents health and learning; targeted aid works fast. Empty plates echo—can you hear it?",
+  "Homless": "Where’s home tonight? Housing-first improves outcomes; unsheltered life shortens life. A key can be medicine—spare one?",
+  "Providing": "Strong back, sore soul? Caregivers burn out without support; sharing extends care. Even pillars need scaffolds—who’s yours?",
+  "Rent": "Thirty percent… or forty? High rent burden predicts stress; protections flatten spikes. Home shouldn’t be a monthly cliff—roped in?",
+  "Debt": "Interest or interest-ing? Debt tracks poor sleep; clear payoff plans help. Compounding cuts both ways—pick a side.",
+  "Inflation": "Why is bread a luxury? Prices up hit the lowest incomes first. When money melts, priorities crystalize—what stays?",
+  "Burnout": "Battery or garden? Low control + high demand fries circuits; rest is treatment. Tend yourself or weeds will.",
+  "Free Time": "Idle or investing? Leisure restores cognition; micro-breaks matter. Empty minutes charge quietly—plug in?",
+  "Insomnia": "Counting sheep or receipts? Poor sleep wrecks mood and learning; therapy and hygiene help. Night is loud—mute button ready?",
+  "Appearance": "Mirror, judge, jury? Pressure dents confidence; representation softens it. Mirrors report, not decide—case closed?",
+  "Abuse": "Survived—now what? Trauma lingers; safety + support rewires futures. Survival’s a skill; healing’s a craft—apprentice in?",
+  "Inadequacy": "Me vs. everyone’s highlight reel? Comparison drains joy; self-compassion refills it. Drafts aren’t albums—release date TBD.",
+  "Guilt": "Useful nudge or rust? Healthy guilt repairs; chronic guilt corrodes. Apologize, adjust, advance—repeat.",
+  "Lonliness": "Who texts first? Isolation harms like smoking; connection heals. Community is cardio for the soul—ready to sweat?",
+  "Screentime": "Thumb in charge? Overuse hits sleep and attention; mindful breaks help. The feed doesn’t feed—log off, look up.",
+  "Comparison": "Scoreboard on? Gratitude stabilizes happiness; comparison shakes it. Compete with yesterday, not everyone.",
+  "Accidents": "Split second or safe second? Small upgrades cut big risks. Cushion corners, not dreams—helmet on?",
+  "Infidelity": "Trust—factory reset? Betrayal wounds deep; honest work can rebuild. Cracks hold gold—ask kintsugi."
 };
 
-/* Questions (lead-in) */
-const QUESTIONS = {
-  "Death":"Ever have a near-death moment—or just a vivid thought spiral?",
-  "Aging":"Feeling the calendar tug a little harder lately?",
-  "Irrelevance":"Worried the world scrolls past faster than you can wave?",
-  "Climate Change":"Do heat alerts feel like the new seasons now?",
-  "Capitalism":"Does the grind ever feel like the point instead of the means?",
-  "Fascism":"Does ‘law and order’ sometimes sound like ‘order, then silence’?",
-  "Communism":"Does a perfect collective sound great—until you check the fine print?",
-  "Socialism":"Wonder where the safety net ends and the hammock begins?",
-  "Loss Of Trust":"Do headlines make you doubt more than decide?",
-  "Loss Of Morality":"Ever feel the rules got fuzzy while stakes got higher?",
-  "War":"Do far-off battles feel closer than they should?",
-  "Surveillance":"Do you act different when the little light is on?",
-  "Guns":"Ever notice how quickly an accident stops being an accident?",
-  "Gun Control":"Do guardrails feel like help or handcuffs?",
-  "Deportation":"What if a line on a map cut through your kitchen table?",
-  "Division":"Have you lost a friend to the algorithm’s sorting hat?",
-  "Corruption":"Does every shortcut seem to have a toll?",
-  "Racism":"How many doors look open until you try the handle?",
-  "Addiction":"Ever feel your habits are piloting and you’re just in economy?",
-  "Automation":"What part of your job can a loop do better—and cheaper?",
-  "Education":"Is school a ladder—or a subscription?",
-  "Illness":"Do symptoms feel like pop-ups that never quite close?",
-  "Loss Of Faith":"Do the quiet moments feel quieter than they used to?",
-  "Violence":"Do raised voices sound like distant sirens now?",
-  "Bills":"Do envelopes feel heavier at the end of the month?",
-  "Parenting":"Ever worry you’re the adult in the room—and the kid needs a better one?",
-  "Equity":"How fair can a race be if the starting lines move?",
-  "Bankruptcy":"What happens when the math says ‘no’ and life says ‘now’?",
-  "Retirement":"Do you have a finish line or just a longer track?",
-  "Billionaires":"Does one leap feel bigger than a million steps?",
-  "Natural Disaster":"Is your go-bag more metaphor than plan?",
-  "Crime":"Do locks help—or just help you sleep?",
-  "Privacy":"Who owns your shadow in the glow of the screen?",
-  "Hunger":"Ever done math on a grocery aisle?",
-  "Homless":"What if your worst night became someone’s every night?",
-  "Providing":"Who supports the supporter when the tank hits E?",
-  "Rent":"Is home a sanctuary or a timer?",
-  "Debt":"Do numbers grow teeth when the lights go out?",
-  "Inflation":"Does your cart get lighter while your bill gets heavier?",
-  "Burnout":"Is your to-do list breeding overnight?",
-  "Free Time":"Do you need permission to pause?",
-  "Insomnia":"Do 3 a.m. thoughts have better lawyers?",
-  "Appearance":"Ever feel judged by a mirror you didn’t ask for?",
-  "Abuse":"How long does a past tense keep hurting?",
-  "Inadequacy":"Do other people’s highlights drown your soundtrack?",
-  "Guilt":"Is your conscience a helpful coach—or a heckler?",
-  "Lonliness":"Can a crowded room feel empty anyway?",
-  "Screentime":"Is your thumb the boss of you?",
-  "Comparison":"Do scoreboards make you forget the game?",
-  "Accidents":"How small was the step before the fall?",
-  "Infidelity":"What does trust weigh when you try to lift it again?"
-};
-
-/* Endings (anxious kicker) */
-const ENDINGS = {
-  "Death":"So when do you think you’re going to die?",
-  "Aging":"So how many good summers do you think you have left?",
-  "Irrelevance":"So who would actually notice if you went quiet for a week?",
-  "Climate Change":"So how many heatwaves until you move—or change?",
-  "Capitalism":"So what’s your price for a calm life?",
-  "Fascism":"So how much silence buys safety in your town?",
-  "Communism":"So how much freedom would you trade for perfect fairness?",
-  "Socialism":"So where’s your line between cushion and crutch?",
-  "Loss Of Trust":"So who exactly do you still believe?",
-  "Loss Of Morality":"So which value would you refuse to sell—ever?",
-  "War":"So who pays your share of the aftermath?",
-  "Surveillance":"So who do you become when watched forever?",
-  "Guns":"So how many safeties does your peace need?",
-  "Gun Control":"So which freedom would you adjust first: speed or safety?",
-  "Deportation":"So what fits in a suitcase if tomorrow is a border?",
-  "Division":"So which bridge are you willing to rebuild—first?",
-  "Corruption":"So what would it take to make you look away?",
-  "Racism":"So which door are you holding open on purpose?",
-  "Addiction":"So what would you do for one clean week?",
-  "Automation":"So what’s your human moat?",
-  "Education":"So what’s your next class—on purpose?",
-  "Illness":"So what will you change before the chart does?",
-  "Loss Of Faith":"So where does your meaning live now?",
-  "Violence":"So what’s your plan before the next flash?",
-  "Bills":"So which bill gets fed last—and why?",
-  "Parenting":"So which memory are you manufacturing today?",
-  "Equity":"So who gets the first fair shot from you?",
-  "Bankruptcy":"So what’s worth starting at zero for?",
-  "Retirement":"So what would a good ending actually look like?",
-  "Billionaires":"So how much is enough—for anyone?",
-  "Natural Disaster":"So where’s your meeting spot when the lights go?",
-  "Crime":"So do you know your neighbors’ names yet?",
-  "Privacy":"So what secrets are you still allowed to have?",
-  "Hunger":"So who eats when the budget breaks?",
-  "Homless":"So what spare key could you offer—literally or not?",
-  "Providing":"So when’s your next day off on purpose?",
-  "Rent":"So what’s the plan if the number jumps again?",
-  "Debt":"So what’s your first bite out of the monster?",
-  "Inflation":"So what do you cut before you crack?",
-  "Burnout":"So where’s the boundary you’ll keep even tired?",
-  "Free Time":"So what if rest was step one, not last?",
-  "Insomnia":"So what would sleep cost—and will you pay it?",
-  "Appearance":"So who are you when the lens is off?",
-  "Abuse":"So what’s your safety signal—and who knows it?",
-  "Inadequacy":"So what’s one thing you’ll ship messy?",
-  "Guilt":"So what repair starts today?",
-  "Lonliness":"So who gets your first brave invite?",
-  "Screentime":"So when do you put the rectangle down?",
-  "Comparison":"So what if you set your own scoreboard?",
-  "Accidents":"So what’s the tiny fix you’ll do tonight?",
-  "Infidelity":"So what promise still means something to you?"
-};
-
-/* Compose: Question + Blurb + Ending */
+/* Helper */
 function getBlurb(title){
-  const q = QUESTIONS[title] || `Ever worry about ${title.toLowerCase()}?`;
-  const mid = (BLURBS[title] && BLURBS[title].trim())
-    ? BLURBS[title]
-    : `${title} trades today’s calm for tomorrow’s questions.`;
-  const end = ENDINGS[title] || `So what will you actually do about ${title.toLowerCase()}?`;
-  return `${q} ${mid} ${end}`;
+  if (BLURBS[title] && BLURBS[title].trim()) return BLURBS[title];
+  const fallbacks = [
+    `${title} arrives softly, then refuses to leave.`,
+    `${title} hides in the margins until the lights go out.`,
+    `${title} hums like a transformer somewhere down the block.`,
+    `${title} trades today’s calm for tomorrow’s questions.`,
+    `${title} is easier to share than to solve.`
+  ];
+  return fallbacks[Math.floor(Math.random()*fallbacks.length)];
 }
 
 /* State */
