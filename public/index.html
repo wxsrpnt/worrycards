@@ -15,17 +15,11 @@
     --radius:14px;
 
     /* Neon palette */
-    --neon:#00FF41;         /* default green */
+    --neon:#00FF41;
     --neon-cyan:#00F5FF;    /* Mythic */
     --neon-yellow:#F8FF00;  /* Legendary */
     --neon-purple:#BB00FF;  /* Epic */
     --neon-blue:#00B3FF;    /* Rare */
-
-    /* Responsive title size (+~25%) and button scale derived from it */
-    --title-size: clamp(3.25rem, 4.75vw + 1rem, 6.25rem);
-    --btn-font: clamp(1rem, calc(var(--title-size) * 0.24), 2.25rem);
-    --btn-pad-y: clamp(.35rem, calc(var(--title-size) * 0.08), .9rem);
-    --btn-pad-x: clamp(.6rem,  calc(var(--title-size) * 0.16), 1.4rem);
   }
 
   html,body{height:100%}
@@ -41,55 +35,63 @@
   }
 
   .haw-wrap{max-width:1400px;margin:1rem auto;padding:.5rem}
+  .haw-header{text-align:center;margin-bottom:1rem;padding:1rem}
 
-  .haw-header{
-    text-align:center;
-    margin-bottom:1rem;
-    padding:1rem;
-    position:relative;
+  /* ===== Header layout (title centered; CTAs left/right) ===== */
+  .haw-top{
+    display:grid;
+    grid-template-columns: auto 1fr auto;
+    align-items:center;
+    gap:min(2vw, 16px);
+    margin-bottom:.5rem;
   }
-
-  .haw-head{
-    font-family:"Pacifico", "Orbitron", "Share Tech Mono", monospace;
+  .haw-top .haw-head{
+    font-family:"Pacifico","Orbitron","Share Tech Mono",monospace;
     font-weight:400;
-    font-size:clamp(2.0rem, 6.5vw + 0.5rem, 4.75rem); /* adjusted */
-    margin:.25rem 0;
+    font-size: clamp(3.6rem, 5.2vw + 1.2rem, 6.2rem); /* bigger, responsive */
     letter-spacing:.06em;
     text-shadow:0 0 14px rgba(0,255,65,.35);
-    white-space: nowrap; /* new */
-}
-
+    white-space:nowrap; /* never wrap “Have a Worry!” */
+    margin:0;
+    text-align:center;
+  }
   .haw-sub{
     max-width:68ch;margin:.35rem auto 1.25rem;
     color:rgba(0,255,65,.85);
     font-size:1rem;
   }
 
-  /* Header buttons (scale with title) */
-  .haw-btn{
-    position:absolute;
-    top:.75rem;
-    padding:var(--btn-pad-y) var(--btn-pad-x);
-    border:2px solid var(--neon);
-    color:var(--neon);
-    font-family:"Pacifico", cursive;
-    font-size:var(--btn-font);
-    text-decoration:none;
-    background:transparent;
-    border-radius:8px;
-    text-shadow:0 0 8px rgba(0,255,65,.7);
-    box-shadow:0 0 12px rgba(0,255,65,.5);
-    transition:transform .2s ease, box-shadow .2s ease, color .2s ease, border-color .2s ease;
-    will-change:transform;
+  /* ===== CTAs ===== */
+  .haw-cta{
+    display:inline-flex; align-items:center; justify-content:center;
+    padding: clamp(.25rem, 1vw, .6rem) clamp(.5rem, 1.5vw, 1rem);
+    border:2px solid #00FF41; border-radius:10px;
+    color:#00FF41; text-decoration:none; background:rgba(0,255,65,.06);
+    text-shadow:0 0 6px rgba(0,255,65,.35);
+    box-shadow:0 0 10px rgba(0,255,65,.25);
+    transition:transform .15s ease, box-shadow .2s ease;
   }
-  .haw-btn:hover{
-    transform:scale(1.06);
-    box-shadow:0 0 20px rgba(0,255,65,.9);
+  .haw-cta span{
+    font-family:"Pacifico","Orbitron","Share Tech Mono",monospace;
+    font-weight:400; line-height:1;
+    font-size: clamp(.7rem, 2vw, 1.3rem);
   }
-  .haw-btn-left{ left:1rem; }
-  .haw-btn-right{ right:1rem; }
+  .haw-cta:hover{ transform:translateY(-1px); box-shadow:0 0 20px rgba(0,255,65,.45); }
+  .haw-cta:focus-visible{ outline:2px solid #00FF41; outline-offset:3px; }
 
-  /* Controls */
+  /* On very small phones: shrink CTAs more, keep title single-line */
+  @media (max-width: 420px){
+    .haw-cta{ padding:.18rem .36rem; border-radius:8px; }
+    .haw-cta span{ font-size:.6rem; }
+    .haw-top .haw-head{ font-size: clamp(2.8rem, 6vw + 0.6rem, 4.8rem); }
+  }
+  @media (max-width: 340px){
+    .haw-cta{ padding:.14rem .3rem; }
+    .haw-cta span{ font-size:.55rem; }
+    .haw-top .haw-head{ font-size: clamp(2.4rem, 6.4vw + 0.4rem, 4.2rem); }
+  }
+
+  /* ===== Controls ===== */
   .haw-controls{display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;margin:0 0 1rem}
   .field{display:flex;align-items:center;gap:.5rem}
   .field label{font-size:.9rem;color:rgba(0,255,65,.85)}
@@ -114,7 +116,7 @@
   .pill:hover{box-shadow:0 0 12px rgba(0,255,65,.25)}
   .pill[aria-pressed="true"]{background:#00FF41;color:#001400;box-shadow:0 0 18px rgba(0,255,65,.45)}
 
-  /* Grid */
+  /* ===== Grid ===== */
   .haw-grid{
     display:grid;gap:16px;
     grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
@@ -128,7 +130,7 @@
   }
   @media(max-width:500px){.haw-grid{grid-template-columns:1fr}}
 
-  /* Card */
+  /* ===== Card ===== */
   .haw-card{
     position:relative; isolation:isolate;
     perspective:1200px; aspect-ratio:1150/1650; margin:0; width:100%;
@@ -137,7 +139,6 @@
   .haw-card:hover{transform:translateY(-2px);box-shadow:0 0 22px rgba(0,255,65,.25)}
   @supports not (aspect-ratio:1150/1650){.haw-card::before{content:"";display:block;padding-top:143.478%}}
 
-  /* Neon aura (brand pulse) */
   .haw-card::after{
     content:"";position:absolute;inset:-6%;
     background:
@@ -148,42 +149,39 @@
   }
   @keyframes hawPulse{0%,100%{opacity:.45;transform:scale(.98)}50%{opacity:.75;transform:scale(1.02)}}
 
-  /* Per-card outline (via inline --outline) */
   .haw-card>.inner{
     position:absolute;inset:0;z-index:1;background:#000;border-radius:var(--radius);
     border:1px solid var(--outline, #00FF41);
     box-shadow:
       0 0 0 1px var(--outline, #00FF41),
-      0 0 14px rgba(0,255,65,.35),
-      0 0 32px rgba(0,255,65,.18);
+      0 0 14px color-mix(in srgb, var(--outline, #00FF41) 35%, transparent),
+      0 0 32px color-mix(in srgb, var(--outline, #00FF41) 22%, transparent);
     transform-style:preserve-3d;transition:transform .6s ease;
   }
   .haw-card.is-flipped>.inner{transform:rotateY(180deg)}
+  @media(prefers-reduced-motion:reduce){.haw-card>.inner{transition:none}}
 
   .face{position:absolute;inset:0;backface-visibility:hidden;border-radius:var(--radius);overflow:hidden}
-  .face.front{display:flex;align-items:center;justify-content:center;background:#000;}
+  .face.front{display:flex;align-items:center;justify-content:center;background:#000}
   .face.front img{
-    width:100%; height:100%; object-fit:contain; display:block;
+    width:100%; height:100%; object-fit:contain; display:block; background:#000;
     filter:contrast(1.05) saturate(1.05) drop-shadow(0 0 6px rgba(0,255,65,.12));
-    background:#000;
   }
+  .haw-card:hover .face.front img{transform:translate(-.25px,.25px)}
 
   .face.back{
     transform:rotateY(180deg);
     background:#000;
     color:var(--outline, #00FF41);
     padding:16px; display:flex; flex-direction:column; gap:.5rem;
-    box-shadow:inset 0 0 18px rgba(0,255,65,.08);
-    font-size:clamp(.85rem, .95vw, 1rem);
-    line-height:1.4;
-    overflow:auto;
+    box-shadow:inset 0 0 18px rgba(0,255,65,.08)
   }
 
   .title{
     font-family:"Pacifico","Orbitron","Share Tech Mono",monospace;
-    font-weight:400; font-size:1.2rem; letter-spacing:.04em;
+    font-weight:400; font-size:1.1rem; letter-spacing:.04em;
     color:var(--outline, #00FF41);
-    text-shadow:0 0 8px rgba(0,255,65,.35);
+    text-shadow:0 0 8px color-mix(in srgb, var(--outline, #00FF41) 35%, transparent);
     margin-top:.25rem;
   }
 
@@ -192,49 +190,34 @@
     padding:.22rem .5rem;border-radius:10px;
     color:var(--outline, #00FF41); background:transparent;
     border:1px solid var(--outline, #00FF41);
-    box-shadow:0 0 10px rgba(0,255,65,.35);
+    box-shadow:0 0 10px color-mix(in srgb, var(--outline, #00FF41) 35%, transparent);
   }
 
-  /* Invisible full-card click target */
-  .flip-btn{position:absolute;inset:0;z-index:3;background:transparent;border:0;cursor:pointer;color:transparent}
+  .flip-btn{
+    position:absolute;inset:0;z-index:3;background:transparent;border:0;cursor:pointer;color:transparent;
+  }
 
   .animate-cards{animation:slideIn .6s ease-out}
   @keyframes slideIn{0%{opacity:0;transform:translateY(20px)}100%{opacity:1;transform:translateY(0)}}
 
-  .haw-empty{background:#000;color:#00FF41;border:1px dashed rgba(0,255,65,.35);padding:1rem;border-radius:12px}
-
-  /* Adjust title for very small screens */
-@media (max-width: 480px){
-  .haw-head{
-    font-size: clamp(2rem, 6vw + 0.5rem, 3.5rem);
-  }
-}
-
-@media (max-width: 360px){
-  .haw-head{
-    font-size: clamp(1.8rem, 7.2vw + 0.4rem, 3.2rem);
-  }
-}
-
+  .haw-empty{background:#000;color:#00FF41;border:1px dashed rgba(0,255,65,.35)}
 </style>
 </head>
 
 <body>
   <div class="haw-wrap">
     <header class="haw-header">
-      <!-- Socials button (left) -->
-      <a href="https://x.com/0xDobbs" target="_blank" rel="noopener" class="haw-btn haw-btn-left">Socials</a>
+      <div class="haw-top">
+        <a class="haw-cta socials" href="https://x.com/0xDobbs" target="_blank" rel="noopener"><span>Socials</span></a>
+        <h1 class="haw-head">Have a Worry!</h1>
+        <a class="haw-cta buy-now" href="https://vibechain.com/market/have-a-worry?ref=H7QP4C2CD6MD" target="_blank" rel="noopener"><span>Buy Now</span></a>
+      </div>
 
-      <h1 class="haw-head">Have&nbsp;a&nbsp;Worry!</h1>
       <p class="haw-sub">
-        A collectible gallery of modern anxieties. 
+        A collectible gallery of modern anxieties.
         Worry isn’t “good,” but here it’s useful—awareness is the first line of defense.
       </p>
 
-      <!-- Buy Now button (right) -->
-      <a href="https://vibechain.com/market/have-a-worry?ref=H7QP4C2CD6MD" target="_blank" rel="noopener" class="haw-btn haw-btn-right">Buy Now</a>
-
-      <!-- Search & rarity pills -->
       <div class="haw-controls" role="search">
         <div class="field">
           <label for="q">Search</label>
@@ -256,10 +239,10 @@
   </div>
 
 <script>
-/* Where images live (Vercel serves /public as site root) */
+/* ---------- Static location for images ---------- */
 const IMG_BASE = "/cards/";
 
-/* Per-rarity outline colors */
+/* ---------- Per-rarity outline colors ---------- */
 const OUTLINE_BY_RARITY = {
   Mythic:    "#00F5FF",
   Legendary: "#F8FF00",
@@ -268,8 +251,9 @@ const OUTLINE_BY_RARITY = {
   Common:    "#00FF41",
   All:       "#00FF41"
 };
+function outlineFor(rarity){ return OUTLINE_BY_RARITY[rarity] || OUTLINE_BY_RARITY.Common; }
 
-/* Card manifest (.webp) */
+/* ---------- Manifest (.webp) ---------- */
 const CARDS = [
   // Mythic
   { id: 1,  title: "Death",            filename: "1-death.webp",            rarity: "Mythic" },
@@ -314,7 +298,7 @@ const CARDS = [
 
   // Common
   { id:33,  title: "Hunger",           filename: "33-hunger.webp",          rarity: "Common" },
-  { id:34,  title: "Homeless",         filename: "34-homeless.webp",        rarity: "Common" },  /* keep spelling to match file */
+  { id:34,  title: "Homeless",         filename: "34-homeless.webp",        rarity: "Common" },  /* keep spelling */
   { id:35,  title: "Providing",        filename: "35-providing.webp",       rarity: "Common" },
   { id:36,  title: "Rent",             filename: "36-rent.webp",            rarity: "Common" },
   { id:37,  title: "Debt",             filename: "37-debt.webp",            rarity: "Common" },
@@ -326,105 +310,72 @@ const CARDS = [
   { id:43,  title: "Abuse",            filename: "43-abuse.webp",           rarity: "Common" },
   { id:44,  title: "Inadequacy",       filename: "44-inadequacy.webp",      rarity: "Common" },
   { id:45,  title: "Guilt",            filename: "45-guilt.webp",           rarity: "Common" },
-  { id:46,  title: "Loneliness",       filename: "46-loneliness.webp",      rarity: "Common" },  /* keep spelling to match file */
+  { id:46,  title: "Loneliness",       filename: "46-loneliness.webp",      rarity: "Common" },
   { id:47,  title: "Screentime",       filename: "47-screentime.webp",      rarity: "Common" },
   { id:48,  title: "Comparison",       filename: "48-comparison.webp",      rarity: "Common" },
   { id:49,  title: "Accidents",        filename: "49-accidents.webp",       rarity: "Common" },
   { id:50,  title: "Infidelity",       filename: "50-infidelity.webp",      rarity: "Common" }
 ];
 
-/* Base blurbs (context + evidence-ish line) */
-const BASE_BLURBS = {
-  "Death": "Every culture faces mortality; work in terror-management theory finds that acknowledging death can reduce avoidance and clarify values.",
-  "Aging": "Gerontology ties cellular senescence and repair decline to functional loss; slower inputs and routine help preserve capacity.",
-  "Irrelevance": "In attention economies, social comparison research shows relevance is felt more than measured—salience fades faster than impact.",
-  "Climate Change": "CO₂ rise, extreme heat, and glacier loss are robust; health research frames climate as a risk multiplier for disease.",
-  "Capitalism": "While markets drive innovation, long-run data show widening wealth gaps that correlate with lower institutional trust.",
-  "Fascism": "Historical analyses link authoritarian surges to crisis periods where dissent is suppressed in exchange for order.",
-  "Communism": "Collective planning raised literacy but centralized power produced scarcity and fear in many 20th-century cases.",
-  "Socialism": "Countries with stronger safety nets tend to show better health and education outcomes—risk-pooling matters.",
-  "Loss Of Trust": "When institutions fail, anxiety spikes; betrayal increases vigilance and lowers community cooperation.",
-  "Loss Of Morality": "Moral-injury studies show distress when actions violate core values—repair often starts with acknowledgement.",
-  "War": "Conflict’s effects persist through PTSD and displacement; public-health metrics track war like a chronic stressor.",
-  "Surveillance": "People change behavior when watched; privacy research links monitoring to reduced autonomy.",
-  "Guns": "Higher firearm prevalence correlates with more accidental deaths; safety practices measurably reduce risk.",
-  "Gun Control": "Analyses associate specific regulations with lower homicide and suicide rates—guardrails matter.",
-  "Deportation": "Family separation raises trauma and economic harm; migration studies record long-tail effects.",
-  "Division": "Polarization maps onto declines in wellbeing; bridging contact reduces misperceptions.",
-  "Corruption": "Transparency indices track trust; corruption operates like a regressive tax on time and opportunity.",
-  "Racism": "Disparities in health, housing, and wealth indicate structural factors beyond individual effort.",
-  "Addiction": "Compulsion reshapes reward circuits; compassionate structure and treatment improve outcomes.",
-  "Automation": "Tasks are replaced faster than whole jobs; reskilling and mobility buffer shocks.",
-  "Education": "Education correlates with longer life and lower poverty; literacy is protective.",
-  "Illness": "Chronic disease multiplies stress, but access and adherence improve trajectories.",
-  "Loss Of Faith": "After trauma, belief often wobbles; meaning rebuilds via practice and community.",
-  "Violence": "Exposure predicts long-term harm; prevention outperforms punishment after the fact.",
-  "Bills": "Cost-of-living strain correlates with anxiety; budgeting and aid change the slope.",
-  "Parenting": "Warmth plus consistency beats perfection; caregiver burnout is real and measurable.",
-  "Equity": "Fair access grows productivity; unequal ladders waste talent and health.",
-  "Bankruptcy": "Financial collapse raises depression and anxiety; relief policies shorten recovery.",
-  "Retirement": "Savings uncertainty is stressful; predictable income stabilizes wellbeing.",
-  "Billionaires": "Rising concentration with stalled mobility erodes social cohesion.",
-  "Natural Disaster": "Early warnings and community networks save lives; extremes are amplifying.",
-  "Crime": "Rates track poverty and disconnection; investment reduces both.",
-  "Privacy": "Autonomy needs private space; breaches cost more than data.",
-  "Hunger": "Food insecurity harms learning and health; targeted aid works quickly.",
-  "Homeless": "Housing-first models improve stability and health outcomes.",
-  "Providing": "Unshared care leads to burnout; distributed load sustains care.",
-  "Rent": "Rent over 30% income predicts stress; protections flatten spikes.",
-  "Debt": "Debt links to anxiety and poor sleep; clear plans reduce both.",
-  "Inflation": "Prices up, purchasing down; lower incomes get hit first.",
-  "Burnout": "Low control plus overload drains; boundaries and rest restore.",
-  "Free Time": "Even short leisure breaks improve cognition and mood.",
-  "Insomnia": "Poor sleep hammers memory and emotion; routines help.",
-  "Appearance": "Body-image pressure undercuts confidence; representation helps.",
-  "Abuse": "Trauma persists without safety and care; healing is possible.",
-  "Inadequacy": "Feeds on comparison; self-compassion practices work.",
-  "Guilt": "Healthy guilt points to repair; chronic guilt corrodes.",
-  "Loneliness": "Isolation harms like smoking; connection is medicine.",
-  "Screentime": "Overuse links to sleep and attention issues; breaks help.",
-  "Comparison": "Comparing lowers happiness; gratitude steadies it.",
-  "Accidents": "Small safety upgrades cut big risk; awareness matters.",
-  "Infidelity": "Betrayal wounds deep; honest work can rebuild trust."
+/* ---------- Blurbs (Q → evidence → quip) ---------- */
+const BLURBS = {
+  "Death": "Ever think about the last page? Terror-management studies find reflecting on mortality can sharpen values and planning. The timer makes the moments taste sweeter.",
+  "Aging": "Worried your body’s code is bug-fixing slower? Gerontology links cellular senescence with decline—but small habits still move the slope. Old firmware, new rituals.",
+  "Irrelevance": "Afraid the feed forgets you? Social comparison research shows ‘relevance’ is mostly perception drift. Trends fade—craft doesn’t.",
+  "Climate Change": "Hotter nights lately? Climate data ties heatwaves, floods, and health risks together. When the house warms, you move the valuables—then the habits.",
+  "Capitalism": "Is the ladder missing rungs? Inequality research shows concentrated wealth erodes trust and mobility. Great engine—terrible seatbelts.",
+  "Fascism": "Does ‘order’ feel expensive? History shows authoritarian swings in crisis; dissent shrinks first. Order without oxygen is sleep.",
+  "Communism": "Worried trading freedom for fairness? 20th-century trials saw literacy gains—plus shortages and fear. Equal tables still need free chairs.",
+  "Socialism": "Could sharing risk work? Countries with stronger safety nets see better health and education. Parachutes help even thrill-seekers.",
+  "Loss Of Trust": "Who do you believe now? Institutional failures spike anxiety; betrayal breeds vigilance. Trust grows slow, bills fast.",
+  "Loss Of Morality": "Compass wobbling? Moral-injury research shows harm when values and actions collide. When the needle shakes, chart by stars.",
+  "War": "Why do echoes outlast treaties? Public health tracks conflict like a disease across generations. Paper ends it—nightmares don’t.",
+  "Surveillance": "Feel different when watched? Studies show autonomy shrinks under observation. The lens is small; the shadow is huge.",
+  "Guns": "Safe with more hardware? Higher prevalence correlates with more accidental deaths. Tools remember what hands forget.",
+  "Gun Control": "Do guardrails work? Certain policies associate with fewer homicides and suicides. Curbs aren’t cages.",
+  "Deportation": "What happens to the kids? Research links family separation to trauma and economic loss. Borders cut paper first, people next.",
+  "Division": "Is every dinner a debate club? Polarization reduces community wellbeing. Fractures let light in—and also the weather.",
+  "Corruption": "Why does everything cost extra? Transparency indices map trust and growth. Crooked roads go downhill by design.",
+  "Racism": "Same rules, different outcomes? Health and housing data show structure matters. Systems need fixes, not pep talks.",
+  "Addiction": "Why ‘just stop’ rarely works? Compulsion rewires reward circuits; compassionate structure helps. Cravings speak data—learn the dialect.",
+  "Automation": "Will the bots take it all? Tasks vanish faster than jobs; reskilling cushions shocks. Let robots lift weight—not purpose.",
+  "Education": "Is school still leverage? More learning tracks with lower poverty and better health. Degrees are paper—literacy is armor.",
+  "Illness": "Why does stress multiply? Chronic disease elevates anxiety; access and support change outcomes. Bodies glitch—souls patch.",
+  "Loss Of Faith": "What if belief blinks? After trauma, meaning rebuilds via community and practice. Doubt is a door—use the handle.",
+  "Violence": "Does toughness fix it? Prevention outperforms punishment downstream. Hurt people hurt—helped people help.",
+  "Bills": "Why are envelopes heavy? Costs strain mental health; budgeting and aid flatten spikes. Add up the breathing, too.",
+  "Parenting": "Are you doing it ‘right’? Warmth and consistency beat perfection. Little mirrors copy your breath, not your resume.",
+  "Equity": "Why waste talent? Fair access lifts whole societies. Level ground grows bigger forests.",
+  "Bankruptcy": "Is failure forever? Financial collapse raises anxiety; relief shortens the hole. Resetting keeps the game playable.",
+  "Retirement": "Will it be enough? Stable pensions cut stress; uncertainty spikes it. Exit signs feel better in daylight.",
+  "Billionaires": "Do rockets trickle? Concentration rises as mobility stalls; risk grows with inequality. One launch doesn’t lift the village.",
+  "Natural Disaster": "Can warnings save time? Early systems save lives; climate amplifies extremes. Nature doesn’t negotiate—neighbors do.",
+  "Crime": "Locks or ladders? Investment in community reduces both crime and fear. Secure doors, open streets.",
+  "Privacy": "Who owns your shadow? Breaches cost more than data—autonomy needs a private room. What’s yours is sacred—even if searchable.",
+  "Hunger": "Can a sandwich change grades? Food insecurity hurts health and learning; targeted aid works fast. Empty plates echo on report cards.",
+  "Homeless": "Where’s the key? Housing-first models improve outcomes and cost less long-term. A door can be medicine.",
+  "Providing": "Strong back, thin margins? Caregivers burn out without support. Share the load before it drops.",
+  "Rent": "Why the monthly cliff? >30% rent burden predicts stress; protections help. Home shouldn’t feel like a deadline.",
+  "Debt": "Sleep worse when you owe? Debt tracks with anxiety; clear plans help both. Interest compounds—so can hope.",
+  "Inflation": "Why does bread cost ballet? Prices up, purchasing down; lowest incomes get hit first. Learn the choreography, then change the music.",
+  "Burnout": "Is ‘tired’ your baseline? High demand + low control = burnout; rest is remedy, not reward. You’re not a battery—you’re a garden.",
+  "Free Time": "Guilty when idle? Leisure restores cognition and mood. Charging is not cheating.",
+  "Insomnia": "Why won’t brain blink? Poor sleep tanks learning and mood; therapy and hygiene lift it. Night is loud—teach it to whisper.",
+  "Appearance": "Mirror a referee? Pressure cuts confidence; representation helps. Mirrors report, not decide.",
+  "Abuse": "Why does the past leak? Trauma lingers without safety and support. Survival is a skill—healing is a craft.",
+  "Inadequacy": "Everyone ahead of you? Social feeds show highlights; self-compassion works. Don’t compare drafts to albums.",
+  "Guilt": "Is guilt useful? Healthy guilt fuels repair; chronic guilt corrodes joy. Apologize, adjust, advance.",
+  "Loneliness": "Is quiet too loud? Isolation harms like smoking; connection heals. Community is cardio for the soul.",
+  "Screentime": "Phone has your thumbs? Excess use links to sleep and attention issues. Scrolls don’t have endings—set yours.",
+  "Comparison": "Scoreboard in your head? Comparison reduces happiness; gratitude stabilizes it. Compete with yesterday, not timelines.",
+  "Accidents": "Bad luck or bad prep? Tiny safety upgrades cut big risks. Cushion corners; keep courage.",
+  "Infidelity": "Can trust be rebuilt? Repair work helps some couples, slowly. Broken isn’t useless—ask kintsugi."
 };
 
-/* Simple question + nudge builders */
-function questionFor(title){
-  const m = {
-    "Death":"Ever have a near-death thought?",
-    "Aging":"Feeling the clock speed up?",
-    "Climate Change":"Does the weather feel… off to you?",
-    "Privacy":"Who’s reading over your shoulder right now?",
-    "Debt":"Does your balance hum louder at night?",
-    "Insomnia":"Another midnight doing the math?",
-  };
-  return (m[title] || `Worried about ${title.toLowerCase()}?`);
+/* ---------- Helpers ---------- */
+function getBlurb(title){
+  return BLURBS[title] || `${title} arrives softly, then refuses to leave.`;
 }
-function nudgeFor(title){
-  const m = {
-    "Death":"So when do you think you’re going to die?",
-    "Aging":"So how many good summers do you have left?",
-    "Climate Change":"So what habit changes first—yours or the weather’s?",
-    "Privacy":"So what deserves a lock today?",
-    "Debt":"So what’s the next payment you can actually make?",
-    "Insomnia":"So what’s your shutdown ritual tonight?"
-  };
-  return (m[title] || `So what’s your next small move on ${title.toLowerCase()}?`);
-}
-function buildBlurb(title){
-  const base = BASE_BLURBS[title] || `${title} arrives softly, then refuses to leave.`;
-  return `${questionFor(title)} ${base} ${nudgeFor(title)}`;
-}
-
-/* State + elements */
-let currentQuery = "";
-let currentRarity = "All";
-const $gallery = document.getElementById("gallery");
-const $query   = document.getElementById("q");
-const $pills   = document.querySelectorAll(".pill");
-
-function outlineFor(rarity){ return OUTLINE_BY_RARITY[rarity] || OUTLINE_BY_RARITY.Common; }
-
 function cardHTML(c){
   const outline = outlineFor(c.rarity);
   return `
@@ -436,12 +387,20 @@ function cardHTML(c){
       <figcaption class="face back">
         <span class="rarity">${c.rarity}</span>
         <div class="title">${c.title}</div>
-        <p>${buildBlurb(c.title)}</p>
+        <p>${getBlurb(c.title)}</p>
       </figcaption>
     </div>
     <button class="flip-btn" aria-label="Flip card: ${c.title}" aria-pressed="false"></button>
   </figure>`;
 }
+
+/* ---------- UI state & render ---------- */
+let currentQuery = "";
+let currentRarity = "All";
+
+const $gallery = document.getElementById("gallery");
+const $query   = document.getElementById("q");
+const $pills   = document.querySelectorAll(".pill");
 
 function render(){
   const q = currentQuery.trim().toLowerCase();
@@ -470,7 +429,7 @@ function render(){
   });
 }
 
-/* events */
+/* ---------- Events ---------- */
 $query.addEventListener("input", (e)=>{ currentQuery = e.target.value; render(); });
 $pills.forEach(btn=>{
   btn.addEventListener("click", ()=>{
@@ -484,7 +443,7 @@ $pills.forEach(btn=>{
   });
 });
 
-/* initial render */
+/* ---------- Initial render ---------- */
 render();
 </script>
 </body>
