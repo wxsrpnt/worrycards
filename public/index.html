@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Have A Worry : Digital Stress</title>
+<title>Have A Worry — Matrix Skin</title>
 
 <!-- Fonts -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -12,13 +12,20 @@
 
 <style>
   :root{
-    --radius:14px;          /* rounded corners back on */
-    /* Neon palette for outlines & text */
+    --radius:14px;
+
+    /* Neon palette */
     --neon:#00FF41;         /* default green */
     --neon-cyan:#00F5FF;    /* Mythic */
     --neon-yellow:#F8FF00;  /* Legendary */
     --neon-purple:#BB00FF;  /* Epic */
     --neon-blue:#00B3FF;    /* Rare */
+
+    /* Responsive title size (+~25%) and button scale derived from it */
+    --title-size: clamp(3.25rem, 4.75vw + 1rem, 6.25rem);
+    --btn-font: clamp(1rem, calc(var(--title-size) * 0.24), 2.25rem);
+    --btn-pad-y: clamp(.35rem, calc(var(--title-size) * 0.08), .9rem);
+    --btn-pad-x: clamp(.6rem,  calc(var(--title-size) * 0.16), 1.4rem);
   }
 
   html,body{height:100%}
@@ -34,21 +41,52 @@
   }
 
   .haw-wrap{max-width:1400px;margin:1rem auto;padding:.5rem}
-  .haw-header{text-align:center;margin-bottom:1rem;padding:1rem}
+
+  .haw-header{
+    text-align:center;
+    margin-bottom:1rem;
+    padding:1rem;
+    position:relative;
+  }
+
   .haw-head{
     font-family:"Pacifico", "Orbitron", "Share Tech Mono", monospace;
     font-weight:400;
-    font-size:clamp(2.6rem, 3.8vw + 1rem, 5rem);
+    font-size:var(--title-size);
     margin:.25rem 0;
-    letter-spacing:.02em;
+    letter-spacing:.06em;
     text-shadow:0 0 14px rgba(0,255,65,.35);
   }
+
   .haw-sub{
     max-width:68ch;margin:.35rem auto 1.25rem;
     color:rgba(0,255,65,.85);
-    font-size:clamp(.95rem, .5vw + .7rem, 1.15rem);
-    text-wrap:pretty;
+    font-size:1rem;
   }
+
+  /* Header buttons (scale with title) */
+  .haw-btn{
+    position:absolute;
+    top:.75rem;
+    padding:var(--btn-pad-y) var(--btn-pad-x);
+    border:2px solid var(--neon);
+    color:var(--neon);
+    font-family:"Pacifico", cursive;
+    font-size:var(--btn-font);
+    text-decoration:none;
+    background:transparent;
+    border-radius:8px;
+    text-shadow:0 0 8px rgba(0,255,65,.7);
+    box-shadow:0 0 12px rgba(0,255,65,.5);
+    transition:transform .2s ease, box-shadow .2s ease, color .2s ease, border-color .2s ease;
+    will-change:transform;
+  }
+  .haw-btn:hover{
+    transform:scale(1.06);
+    box-shadow:0 0 20px rgba(0,255,65,.9);
+  }
+  .haw-btn-left{ left:1rem; }
+  .haw-btn-right{ right:1rem; }
 
   /* Controls */
   .haw-controls{display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;margin:0 0 1rem}
@@ -89,18 +127,16 @@
   }
   @media(max-width:500px){.haw-grid{grid-template-columns:1fr}}
 
-  /* Card — exact 1150:1650 aspect */
+  /* Card */
   .haw-card{
     position:relative; isolation:isolate;
     perspective:1200px; aspect-ratio:1150/1650; margin:0; width:100%;
     transition:transform .25s ease,box-shadow .25s ease;
   }
   .haw-card:hover{transform:translateY(-2px);box-shadow:0 0 22px rgba(0,255,65,.25)}
-  @supports not (aspect-ratio:1150/1650){
-    .haw-card::before{content:"";display:block;padding-top:143.478%} /* 1650/1150*100 */
-  }
+  @supports not (aspect-ratio:1150/1650){.haw-card::before{content:"";display:block;padding-top:143.478%}}
 
-  /* Neon aura (kept green for brand pulse) */
+  /* Neon aura (brand pulse) */
   .haw-card::after{
     content:"";position:absolute;inset:-6%;
     background:
@@ -117,47 +153,37 @@
     border:1px solid var(--outline, #00FF41);
     box-shadow:
       0 0 0 1px var(--outline, #00FF41),
-      0 0 14px color-mix(in srgb, var(--outline, #00FF41) 35%, transparent),
-      0 0 32px color-mix(in srgb, var(--outline, #00FF41) 22%, transparent);
+      0 0 14px rgba(0,255,65,.35),
+      0 0 32px rgba(0,255,65,.18);
     transform-style:preserve-3d;transition:transform .6s ease;
   }
   .haw-card.is-flipped>.inner{transform:rotateY(180deg)}
-  @media(prefers-reduced-motion:reduce){.haw-card>.inner{transition:none}}
 
   .face{position:absolute;inset:0;backface-visibility:hidden;border-radius:var(--radius);overflow:hidden}
-  .face.front{
-    display:flex;align-items:center;justify-content:center;background:#000;
-  }
-
-  /* FULL-BLEED ART with matched aspect → no cropping */
+  .face.front{display:flex;align-items:center;justify-content:center;background:#000;}
   .face.front img{
-    width:100%; height:100%;
-    object-fit:cover; object-position:center;
-    display:block;
+    width:100%; height:100%; object-fit:contain; display:block;
     filter:contrast(1.05) saturate(1.05) drop-shadow(0 0 6px rgba(0,255,65,.12));
     background:#000;
   }
 
-  /* Back face uses grid to keep title+badge fixed and blurb flexible */
   .face.back{
     transform:rotateY(180deg);
     background:#000;
     color:var(--outline, #00FF41);
-    padding:16px;
-    display:grid;
-    grid-template-rows:auto auto 1fr; /* rarity, title, blurb fills */
-    gap:.5rem;
+    padding:16px; display:flex; flex-direction:column; gap:.5rem;
     box-shadow:inset 0 0 18px rgba(0,255,65,.08);
+    font-size:clamp(.85rem, .95vw, 1rem);
+    line-height:1.4;
+    overflow:auto;
   }
 
   .title{
     font-family:"Pacifico","Orbitron","Share Tech Mono",monospace;
-    font-weight:400;
-    font-size:clamp(1rem, .8vw + .6rem, 1.25rem);
-    letter-spacing:.02em;
+    font-weight:400; font-size:1.2rem; letter-spacing:.04em;
     color:var(--outline, #00FF41);
-    text-shadow:0 0 8px color-mix(in srgb, var(--outline, #00FF41) 35%, transparent);
-    margin-top:.1rem;
+    text-shadow:0 0 8px rgba(0,255,65,.35);
+    margin-top:.25rem;
   }
 
   .rarity{
@@ -165,43 +191,35 @@
     padding:.22rem .5rem;border-radius:10px;
     color:var(--outline, #00FF41); background:transparent;
     border:1px solid var(--outline, #00FF41);
-    box-shadow:0 0 10px color-mix(in srgb, var(--outline, #00FF41) 35%, transparent)
+    box-shadow:0 0 10px rgba(0,255,65,.35);
   }
 
-  /* Blurb: fluid type + soft clamp + only scroll if necessary */
-  .face.back p{
-    margin:0;
-    font-size:clamp(.82rem, .9vw + .35rem, 1.05rem);
-    line-height:1.35;
-    text-wrap:pretty;
-    overflow:auto;          /* only appears if really needed */
-    scrollbar-width:thin;   /* Firefox */
-  }
-  .face.back p::-webkit-scrollbar{ width:8px }
-  .face.back p::-webkit-scrollbar-thumb{
-    background:rgba(0,255,65,.25); border-radius:8px
-  }
-
-  .flip-btn{
-    position:absolute;inset:0;z-index:3;background:transparent;border:0;cursor:pointer;color:transparent;
-  }
+  /* Invisible full-card click target */
+  .flip-btn{position:absolute;inset:0;z-index:3;background:transparent;border:0;cursor:pointer;color:transparent}
 
   .animate-cards{animation:slideIn .6s ease-out}
   @keyframes slideIn{0%{opacity:0;transform:translateY(20px)}100%{opacity:1;transform:translateY(0)}}
 
-  .haw-empty{background:#000;color:#00FF41;border:1px dashed rgba(0,255,65,.35)}
+  .haw-empty{background:#000;color:#00FF41;border:1px dashed rgba(0,255,65,.35);padding:1rem;border-radius:12px}
 </style>
 </head>
 
 <body>
   <div class="haw-wrap">
     <header class="haw-header">
+      <!-- Socials button (left) -->
+      <a href="https://x.com/0xDobbs" target="_blank" rel="noopener" class="haw-btn haw-btn-left">Socials</a>
+
       <h1 class="haw-head">Have a Worry!</h1>
       <p class="haw-sub">
         A collectible gallery of modern anxieties. 
         Worry isn’t “good,” but here it’s useful—awareness is the first line of defense.
       </p>
 
+      <!-- Buy Now button (right) -->
+      <a href="https://vibechain.com/market/have-a-worry?ref=H7QP4C2CD6MD" target="_blank" rel="noopener" class="haw-btn haw-btn-right">Buy Now</a>
+
+      <!-- Search & rarity pills -->
       <div class="haw-controls" role="search">
         <div class="field">
           <label for="q">Search</label>
@@ -281,7 +299,7 @@ const CARDS = [
 
   // Common
   { id:33,  title: "Hunger",           filename: "33-hunger.webp",          rarity: "Common" },
-  { id:34,  title: "Homeless",         filename: "34-homeless.webp",        rarity: "Common" },
+  { id:34,  title: "Homless",          filename: "34-homless.webp",         rarity: "Common" },  /* keep spelling to match file */
   { id:35,  title: "Providing",        filename: "35-providing.webp",       rarity: "Common" },
   { id:36,  title: "Rent",             filename: "36-rent.webp",            rarity: "Common" },
   { id:37,  title: "Debt",             filename: "37-debt.webp",            rarity: "Common" },
@@ -293,85 +311,99 @@ const CARDS = [
   { id:43,  title: "Abuse",            filename: "43-abuse.webp",           rarity: "Common" },
   { id:44,  title: "Inadequacy",       filename: "44-inadequacy.webp",      rarity: "Common" },
   { id:45,  title: "Guilt",            filename: "45-guilt.webp",           rarity: "Common" },
-  { id:46,  title: "Loneliness",       filename: "46-loneliness.webp",      rarity: "Common" },
+  { id:46,  title: "Lonliness",        filename: "46-lonliness.webp",       rarity: "Common" },  /* keep spelling to match file */
   { id:47,  title: "Screentime",       filename: "47-screentime.webp",      rarity: "Common" },
   { id:48,  title: "Comparison",       filename: "48-comparison.webp",      rarity: "Common" },
   { id:49,  title: "Accidents",        filename: "49-accidents.webp",       rarity: "Common" },
   { id:50,  title: "Infidelity",       filename: "50-infidelity.webp",      rarity: "Common" }
 ];
 
-/* Blurbs */
-const BLURBS = {
-  "Death": "Ever wonder how close you are to the end? Every culture faces mortality; studies in terror management theory show that acknowledging death can reduce avoidance and sharpen values. The timer makes the moments taste sweeter—so when’s your final act?",
-  "Aging": "Worried your warranty expired? Senescent cells and DNA wear drive decline; gerontology links aging with reduced repair capacity. The code still runs—just handle with care.",
-  "Irrelevance": "Afraid the feed forgets you? In attention economies, social comparison research shows relevance is felt more than measured. Trends vanish, fingerprints last—will yours?",
-  "Climate Change": "Hot enough for panic? CO₂, heatwaves, and glacier loss tell one story; climate science frames it as a health crisis too. If the house is warming, what do you move first?",
-  "Capitalism": "Is the ladder missing rungs? Markets fuel innovation—and inequality that erodes trust. Great engine, cheap seatbelts—are you buckled?",
-  "Fascism": "Trading liberty for order? History shows strongmen bloom in crises; suppressed dissent is the cost. Order without oxygen suffocates—ready to breathe?",
-  "Communism": "Perfect plan, messy people? Collective ideals met centralized force; literacy rose, freedoms fell. Equal tables need free chairs—who sets yours?",
-  "Socialism": "Safety net or hammock? Stronger nets correlate with better health and education outcomes. Share the risk, keep the spark—deal?",
-  "Loss Of Trust": "Who’s still honest? Institutional failures spike anxiety; betrayal breeds vigilance. Trust grows slow, breaks fast—got glue?",
-  "Loss Of Morality": "Does your compass wobble? Moral injury shows harm when actions violate values. When true north flickers, what stars guide you?",
-  "War": "Peace on paper only? PTSD and displacement echo for generations; conflict spreads like disease. Treat the wound or the scar wins.",
-  "Surveillance": "Feel watched? Being observed shifts behavior; autonomy shrinks under constant gaze. The lens is tiny; the shadow isn’t—duck or dance?",
-  "Guns": "Tool or ticking worry? More guns correlate with more accidental deaths. Tools remember what hands forget—steady enough?",
-  "Gun Control": "Do guardrails help? Certain policies associate with fewer homicides and suicides. Rails don’t slow you much—just the plunge.",
-  "Deportation": "What happens to the kids? Separation links to trauma and economic damage. Borders cut paper first, people next—whose line is it?",
-  "Division": "Team red or blue bruise? Polarization drags wellbeing down. Cracks let light in—and storms—umbrella ready?",
-  "Corruption": "How much goes missing? Transparency scores mirror trust; the poor pay the hidden tax. Crooked paths go downhill—want brakes?",
-  "Racism": "Same rules, different roads? From health to housing, disparities persist. Systems need fixes, not pep talks—what’s your patch?",
-  "Addiction": "Who’s driving—craving or you? Compulsion rewires reward; structure plus compassion works. Speak recovery’s dialect—fluent yet?",
-  "Automation": "Will a bot take it? Tasks vanish faster than jobs; reskilling dulls the shock. Let robots lift weight, not meaning—what’s yours?",
-  "Education": "Diploma or defense? Schooling reduces poverty and boosts health. Degrees are paper; literacy is armor—suited up?",
-  "Illness": "Body buffering? Chronic conditions amplify stress; access and support improve outcomes. Glitches happen—got backups?",
-  "Loss Of Faith": "Who’s listening upstairs? Doubt spikes after trauma; community rebuilds meaning. Doors close; rituals find windows—try one?",
-  "Violence": "Cycle or stop sign? Exposure harms long-term; prevention beats punishment. Heal the root or prune forever?",
-  "Bills": "Envelope anxiety? Cost-of-living strains mental health; plans and aid change the slope. Ten light papers, heavy mind—balance due?",
-  "Parenting": "Any manuals included? Strain is real; warmth beats perfection. Little mirrors learn your breathing—steady?",
-  "Equity": "Fair shot or fairytale? Access links to healthier societies; unequal ladders waste talent. Level ground grows forests—plant?",
-  "Bankruptcy": "Game over or reset? Financial collapse raises anxiety; relief policies shorten the hole. Continue? Insert grace.",
-  "Retirement": "Enough tucked away? Uncertain savings raise stress; stable pensions soothe. Exits feel safer in daylight—check bulbs?",
-  "Billionaires": "Rockets for whom? Wealth concentration rises as mobility stalls. One launch won’t lift the village—who fuels the streetlights?",
-  "Natural Disaster": "Is the sky mad? Early warnings save lives; extremes are amplifying. Nature doesn’t negotiate—neighbors do—met yours?",
-  "Crime": "Lock or look out? Rates map to poverty and disconnection; investment lowers both. Bolt the door, open the block—walk?",
-  "Privacy": "Who’s reading? Autonomy needs a private room; breaches cost more than data. What’s yours is sacred—even if searchable.",
-  "Hunger": "What’s for dinner—nothing? Food insecurity dents health and learning; targeted aid works fast. Empty plates echo—can you hear it?",
-  "Homeless": "Where’s home tonight? Housing-first improves outcomes; unsheltered life shortens life. A key can be medicine—spare one?",
-  "Providing": "Strong back, sore soul? Caregivers burn out without support; sharing extends care. Even pillars need scaffolds—who’s yours?",
-  "Rent": "Thirty percent… or forty? High rent burden predicts stress; protections flatten spikes. Home shouldn’t be a monthly cliff—roped in?",
-  "Debt": "Interest or interest-ing? Debt tracks poor sleep; clear payoff plans help. Compounding cuts both ways—pick a side.",
-  "Inflation": "Why is bread a luxury? Prices up hit the lowest incomes first. When money melts, priorities crystalize—what stays?",
-  "Burnout": "Battery or garden? Low control + high demand fries circuits; rest is treatment. Tend yourself or weeds will.",
-  "Free Time": "Idle or investing? Leisure restores cognition; micro-breaks matter. Empty minutes charge quietly—plug in?",
-  "Insomnia": "Counting sheep or receipts? Poor sleep wrecks mood and learning; therapy and hygiene help. Night is loud—mute button ready?",
-  "Appearance": "Mirror, judge, jury? Pressure dents confidence; representation softens it. Mirrors report, not decide—case closed?",
-  "Abuse": "Survived—now what? Trauma lingers; safety + support rewires futures. Survival’s a skill; healing’s a craft—apprentice in?",
-  "Inadequacy": "Me vs. everyone’s highlight reel? Comparison drains joy; self-compassion refills it. Drafts aren’t albums—release date TBD.",
-  "Guilt": "Useful nudge or rust? Healthy guilt repairs; chronic guilt corrodes. Apologize, adjust, advance—repeat.",
-  "Loneliness": "Who texts first? Isolation harms like smoking; connection heals. Community is cardio for the soul—ready to sweat?",
-  "Screentime": "Thumb in charge? Overuse hits sleep and attention; mindful breaks help. The feed doesn’t feed—log off, look up.",
-  "Comparison": "Scoreboard on? Gratitude stabilizes happiness; comparison shakes it. Compete with yesterday, not everyone.",
-  "Accidents": "Split second or safe second? Small upgrades cut big risks. Cushion corners, not dreams—helmet on?",
-  "Infidelity": "Trust—factory reset? Betrayal wounds deep; honest work can rebuild. Cracks hold gold—ask kintsugi."
+/* Base blurbs (context + evidence-ish line) */
+const BASE_BLURBS = {
+  "Death": "Every culture faces mortality; work in terror-management theory finds that acknowledging death can reduce avoidance and clarify values.",
+  "Aging": "Gerontology ties cellular senescence and repair decline to functional loss; slower inputs and routine help preserve capacity.",
+  "Irrelevance": "In attention economies, social comparison research shows relevance is felt more than measured—salience fades faster than impact.",
+  "Climate Change": "CO₂ rise, extreme heat, and glacier loss are robust; health research frames climate as a risk multiplier for disease.",
+  "Capitalism": "While markets drive innovation, long-run data show widening wealth gaps that correlate with lower institutional trust.",
+  "Fascism": "Historical analyses link authoritarian surges to crisis periods where dissent is suppressed in exchange for order.",
+  "Communism": "Collective planning raised literacy but centralized power produced scarcity and fear in many 20th-century cases.",
+  "Socialism": "Countries with stronger safety nets tend to show better health and education outcomes—risk-pooling matters.",
+  "Loss Of Trust": "When institutions fail, anxiety spikes; betrayal increases vigilance and lowers community cooperation.",
+  "Loss Of Morality": "Moral-injury studies show distress when actions violate core values—repair often starts with acknowledgement.",
+  "War": "Conflict’s effects persist through PTSD and displacement; public-health metrics track war like a chronic stressor.",
+  "Surveillance": "People change behavior when watched; privacy research links monitoring to reduced autonomy.",
+  "Guns": "Higher firearm prevalence correlates with more accidental deaths; safety practices measurably reduce risk.",
+  "Gun Control": "Analyses associate specific regulations with lower homicide and suicide rates—guardrails matter.",
+  "Deportation": "Family separation raises trauma and economic harm; migration studies record long-tail effects.",
+  "Division": "Polarization maps onto declines in wellbeing; bridging contact reduces misperceptions.",
+  "Corruption": "Transparency indices track trust; corruption operates like a regressive tax on time and opportunity.",
+  "Racism": "Disparities in health, housing, and wealth indicate structural factors beyond individual effort.",
+  "Addiction": "Compulsion reshapes reward circuits; compassionate structure and treatment improve outcomes.",
+  "Automation": "Tasks are replaced faster than whole jobs; reskilling and mobility buffer shocks.",
+  "Education": "Education correlates with longer life and lower poverty; literacy is protective.",
+  "Illness": "Chronic disease multiplies stress, but access and adherence improve trajectories.",
+  "Loss Of Faith": "After trauma, belief often wobbles; meaning rebuilds via practice and community.",
+  "Violence": "Exposure predicts long-term harm; prevention outperforms punishment after the fact.",
+  "Bills": "Cost-of-living strain correlates with anxiety; budgeting and aid change the slope.",
+  "Parenting": "Warmth plus consistency beats perfection; caregiver burnout is real and measurable.",
+  "Equity": "Fair access grows productivity; unequal ladders waste talent and health.",
+  "Bankruptcy": "Financial collapse raises depression and anxiety; relief policies shorten recovery.",
+  "Retirement": "Savings uncertainty is stressful; predictable income stabilizes wellbeing.",
+  "Billionaires": "Rising concentration with stalled mobility erodes social cohesion.",
+  "Natural Disaster": "Early warnings and community networks save lives; extremes are amplifying.",
+  "Crime": "Rates track poverty and disconnection; investment reduces both.",
+  "Privacy": "Autonomy needs private space; breaches cost more than data.",
+  "Hunger": "Food insecurity harms learning and health; targeted aid works quickly.",
+  "Homless": "Housing-first models improve stability and health outcomes.",
+  "Providing": "Unshared care leads to burnout; distributed load sustains care.",
+  "Rent": "Rent over 30% income predicts stress; protections flatten spikes.",
+  "Debt": "Debt links to anxiety and poor sleep; clear plans reduce both.",
+  "Inflation": "Prices up, purchasing down; lower incomes get hit first.",
+  "Burnout": "Low control plus overload drains; boundaries and rest restore.",
+  "Free Time": "Even short leisure breaks improve cognition and mood.",
+  "Insomnia": "Poor sleep hammers memory and emotion; routines help.",
+  "Appearance": "Body-image pressure undercuts confidence; representation helps.",
+  "Abuse": "Trauma persists without safety and care; healing is possible.",
+  "Inadequacy": "Feeds on comparison; self-compassion practices work.",
+  "Guilt": "Healthy guilt points to repair; chronic guilt corrodes.",
+  "Lonliness": "Isolation harms like smoking; connection is medicine.",
+  "Screentime": "Overuse links to sleep and attention issues; breaks help.",
+  "Comparison": "Comparing lowers happiness; gratitude steadies it.",
+  "Accidents": "Small safety upgrades cut big risk; awareness matters.",
+  "Infidelity": "Betrayal wounds deep; honest work can rebuild trust."
 };
 
-/* Helper */
-function getBlurb(title){
-  if (BLURBS[title] && BLURBS[title].trim()) return BLURBS[title];
-  const fallbacks = [
-    `${title} arrives softly, then refuses to leave.`,
-    `${title} hides in the margins until the lights go out.`,
-    `${title} hums like a transformer somewhere down the block.`,
-    `${title} trades today’s calm for tomorrow’s questions.`,
-    `${title} is easier to share than to solve.`
-  ];
-  return fallbacks[Math.floor(Math.random()*fallbacks.length)];
+/* Simple question + nudge builders */
+function questionFor(title){
+  const m = {
+    "Death":"Ever have a near-death thought?",
+    "Aging":"Feeling the clock speed up?",
+    "Climate Change":"Does the weather feel… off to you?",
+    "Privacy":"Who’s reading over your shoulder right now?",
+    "Debt":"Does your balance hum louder at night?",
+    "Insomnia":"Another midnight doing the math?",
+  };
+  return (m[title] || `Worried about ${title.toLowerCase()}?`);
+}
+function nudgeFor(title){
+  const m = {
+    "Death":"So when do you think you’re going to die?",
+    "Aging":"So how many good summers do you have left?",
+    "Climate Change":"So what habit changes first—yours or the weather’s?",
+    "Privacy":"So what deserves a lock today?",
+    "Debt":"So what’s the next payment you can actually make?",
+    "Insomnia":"So what’s your shutdown ritual tonight?"
+  };
+  return (m[title] || `So what’s your next small move on ${title.toLowerCase()}?`);
+}
+function buildBlurb(title){
+  const base = BASE_BLURBS[title] || `${title} arrives softly, then refuses to leave.`;
+  return `${questionFor(title)} ${base} ${nudgeFor(title)}`;
 }
 
-/* State */
+/* State + elements */
 let currentQuery = "";
 let currentRarity = "All";
-
 const $gallery = document.getElementById("gallery");
 const $query   = document.getElementById("q");
 const $pills   = document.querySelectorAll(".pill");
@@ -389,7 +421,7 @@ function cardHTML(c){
       <figcaption class="face back">
         <span class="rarity">${c.rarity}</span>
         <div class="title">${c.title}</div>
-        <p>${getBlurb(c.title)}</p>
+        <p>${buildBlurb(c.title)}</p>
       </figcaption>
     </div>
     <button class="flip-btn" aria-label="Flip card: ${c.title}" aria-pressed="false"></button>
